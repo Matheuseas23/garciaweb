@@ -17,7 +17,7 @@ Página única em HTML, CSS e JavaScript puros. Sem instalação: as bibliotecas
 Não envia nada para servidor nenhum: monta a mensagem (nome, negócio, tipo de site, Instagram, recado) e abre o WhatsApp com ela escrita. A pessoa decide se envia. Sem custo e sem banco de dados.
 
 ## Arquivos de publicação
-- `favicon.ico`, `assets/icone-32.png`, `assets/icone-180.png` (iPhone), `assets/icone-512.png`: logo original reduzida sobre o fundo `#0D0E13`.
+- `favicon.ico`, `assets/icone-32.png`, `assets/icone-180.png` (iPhone): logo original reduzida sobre o fundo `#0D0E13`.
 - `assets/compartilhar.png` (1200 × 630): imagem da prévia do link no WhatsApp/Instagram.
 - `404.html`, `robots.txt`, `vercel.json` (cache das imagens + cabeçalhos de segurança), `.vercelignore`.
 
