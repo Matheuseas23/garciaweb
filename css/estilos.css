@@ -1,0 +1,793 @@
+/* ==========================================================
+   GARCIA WEB — estilos
+   1. Tokens (cores, fontes, medidas)
+   2. Base
+   3. Utilidades (container, etiqueta, textos)
+   4. Botões
+   5. Vidro (Liquid Glass)
+   6. Menu do computador
+   7. Abas do celular
+   8. Hero
+   9. Seções
+   10. Projetos (molduras de navegador)
+   11. Serviços
+   12. Contato
+   13. Rodapé
+   14. Painel de pendências (modo rascunho)
+   15. Celular e tablet
+   16. Movimento reduzido e navegadores sem desfoque
+   ========================================================== */
+
+/* ---------- 1. Tokens ---------- */
+:root {
+  --bg: #0D0E13;
+  --bg-2: #121318;
+  --laranja: #F96D14;
+  --azul: #0C08FB;
+  --texto: #FFFFFF;
+  --texto-2: #94A3B8;
+  --linha: rgba(255, 255, 255, 0.08);
+  --linha-forte: rgba(255, 255, 255, 0.14);
+
+  /* Gradiente oficial. Navegadores novos misturam em oklch (meio sem "lama"). */
+  --gradiente: linear-gradient(90deg, var(--laranja), var(--azul));
+
+  --fonte-titulo: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --fonte-texto: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  --fs-display: clamp(2.75rem, 1.2rem + 5.8vw, 6rem);
+  --fs-h2: clamp(2.25rem, 1.5rem + 3.2vw, 4rem);
+  --fs-h3: clamp(1.25rem, 1.05rem + 0.8vw, 1.625rem);
+  --fs-corpo: clamp(1rem, 0.96rem + 0.2vw, 1.125rem);
+  --fs-etiqueta: 0.75rem;
+
+  --margem: clamp(1.25rem, 0.5rem + 3vw, 3rem);
+  --largura: 1360px;
+  --raio-card: 24px;
+  --menu-h: 64px;
+  --abas-h: 64px;
+  --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@supports (background: linear-gradient(in oklch, red, blue)) {
+  :root { --gradiente: linear-gradient(90deg in oklch, var(--laranja), var(--azul)); }
+}
+
+/* ---------- 2. Base ---------- */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--menu-h) + 40px);
+  scrollbar-color: #2a2b33 var(--bg);
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--texto);
+  font-family: var(--fonte-texto);
+  font-size: var(--fs-corpo);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+img, svg, video, iframe { display: block; max-width: 100%; }
+a { color: inherit; }
+p { margin: 0; }
+ul, ol { margin: 0; padding: 0; list-style: none; }
+
+h1, h2, h3 {
+  margin: 0;
+  font-family: var(--fonte-titulo);
+  font-weight: 500;
+  text-wrap: balance;
+}
+
+:focus-visible {
+  outline: 2px solid var(--texto);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
+::selection { background: var(--laranja); color: #000; }
+
+/* ---------- 3. Utilidades ---------- */
+.container {
+  width: min(100% - 2 * var(--margem), var(--largura));
+  margin-inline: auto;
+}
+
+.etiqueta {
+  font-size: var(--fs-etiqueta);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--texto-2);
+}
+
+.sr {
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.pular {
+  position: fixed;
+  left: 1rem; top: -100px;
+  z-index: 100;
+  padding: 0.75rem 1.25rem;
+  border-radius: 999px;
+  background: var(--texto);
+  color: var(--bg);
+  font-weight: 600;
+  text-decoration: none;
+}
+.pular:focus { top: 1rem; }
+
+.icone { width: 1.25em; height: 1.25em; flex: none; }
+
+.link-seta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 44px;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--texto);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.link-seta .icone { width: 1em; height: 1em; transition: transform 0.2s var(--ease); }
+@media (hover: hover) {
+  .link-seta:hover { color: var(--laranja); }
+  .link-seta:hover .icone { transform: translate(2px, -2px); }
+}
+
+/* Caixa de "em construção" das próximas etapas */
+.em-breve {
+  padding: 2.5rem 1.5rem;
+  border: 1px dashed rgba(255, 255, 255, 0.18);
+  border-radius: var(--raio-card);
+  color: var(--texto-2);
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+/* Espaço reservado da logo, até chegar o PNG transparente */
+.logo-pendente {
+  display: inline-grid;
+  place-items: center;
+  height: 36px;
+  padding: 0 0.9rem;
+  border: 1px dashed rgba(255, 255, 255, 0.35);
+  border-radius: 8px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--texto-2);
+}
+
+/* ---------- 4. Botões ---------- */
+.botao {
+  --altura: 52px;
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  min-height: var(--altura);
+  padding: 0 1.6rem;
+  border: 0;
+  border-radius: 999px;
+  font: 600 1rem/1 var(--fonte-texto);
+  color: var(--texto);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s var(--ease), box-shadow 0.25s var(--ease), background-color 0.25s var(--ease);
+}
+.botao:active { transform: scale(0.97); }
+.botao--p { --altura: 44px; padding: 0 1.15rem; font-size: 0.9375rem; }
+
+/* Principal: gradiente oficial + reflexo fino no topo.
+   A sombra leve só na faixa do texto garante contraste ≥ 4,5:1
+   (medido em 29/10); as pontas continuam laranja e azul puros. */
+.botao--principal {
+  background:
+    linear-gradient(90deg, rgba(13, 14, 19, 0.05) 0%, rgba(13, 14, 19, 0.26) 30%, rgba(13, 14, 19, 0.12) 65%, rgba(13, 14, 19, 0) 100%),
+    var(--gradiente);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.35), inset 0 -1px 1px rgba(0, 0, 0, 0.15);
+}
+.botao__icone {
+  display: grid;
+  place-items: center;
+  width: 30px; height: 30px;
+  margin-left: -0.75rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+}
+.botao--p .botao__icone { width: 26px; height: 26px; margin-left: -0.55rem; }
+.botao__icone svg { width: 16px; height: 16px; }
+
+/* Secundário: vidro translúcido; no hover a borda vira gradiente */
+.botao--vidro {
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.botao--vidro::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  padding: 1px;
+  border-radius: inherit;
+  background: var(--gradiente);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.25s var(--ease);
+}
+
+@media (hover: hover) {
+  .botao--principal:hover {
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.35), 0 10px 28px -6px rgba(249, 109, 20, 0.45);
+  }
+  .botao--vidro:hover { background: rgba(255, 255, 255, 0.1); }
+  .botao--vidro:hover::before { opacity: 1; }
+}
+
+/* ---------- 5. Vidro (Liquid Glass) ---------- */
+/* Fundo escuro translúcido + desfoque + borda que brilha:
+   clara em cima, laranja embaixo à esquerda e azul embaixo à direita. */
+.vidro {
+  position: relative;
+  background: rgba(18, 19, 24, 0.55);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+.vidro::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  pointer-events: none;
+  background: conic-gradient(
+    rgba(255, 255, 255, 0.3),
+    rgba(255, 255, 255, 0.08) 80deg,
+    rgba(12, 8, 251, 0.75) 110deg,
+    rgba(255, 255, 255, 0.06) 180deg,
+    rgba(249, 109, 20, 0.7) 250deg,
+    rgba(255, 255, 255, 0.08) 280deg,
+    rgba(255, 255, 255, 0.3)
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+/* Marcador de vidro que desliza até a seção ativa (menu e abas) */
+.marcador {
+  position: absolute;
+  top: 4px; left: 0;
+  height: calc(100% - 8px);
+  width: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.09);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.45s var(--ease), width 0.45s var(--ease), opacity 0.3s var(--ease);
+}
+
+/* ---------- 6. Menu do computador ---------- */
+.topo {
+  position: fixed;
+  inset: 16px 0 auto;
+  z-index: 50;
+  pointer-events: none;
+}
+.menu {
+  pointer-events: auto;
+  width: min(100% - 2 * var(--margem), 1180px);
+  height: var(--menu-h);
+  margin-inline: auto;
+  padding: 0 10px 0 14px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  transition: background-color 0.3s var(--ease);
+}
+.com-js.rolou .menu { background: rgba(18, 19, 24, 0.72); }
+
+.menu__logo {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  border-radius: 8px;
+  text-decoration: none;
+}
+.menu__logo img { height: 36px; width: auto; }
+
+.menu__trilho { position: relative; padding: 4px; }
+.menu__links { display: flex; gap: 2px; }
+.menu__links a {
+  position: relative;
+  z-index: 1;
+  display: block;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.72);
+  text-decoration: none;
+  transition: color 0.2s var(--ease);
+}
+.menu__links a[aria-current="true"] { color: var(--laranja); }
+@media (hover: hover) {
+  .menu__links a:hover { color: var(--texto); }
+  .menu__links a[aria-current="true"]:hover { color: var(--laranja); }
+}
+
+/* ---------- 7. Abas do celular (escondidas no computador) ---------- */
+.abas { display: none; }
+
+/* ---------- 8. Hero ---------- */
+.hero {
+  position: relative;
+  isolation: isolate;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: calc(var(--menu-h) + 88px) 0 clamp(5rem, 10vh, 7rem);
+  overflow: hidden;
+}
+
+.hero__fundo { position: absolute; inset: 0; z-index: -1; }
+
+/* Luz: laranja embaixo à esquerda, azul à direita (o gradiente oficial em forma de luz) */
+.hero__luz {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(42% 48% at 20% 92%, rgba(249, 109, 20, 0.62), transparent 72%),
+    radial-gradient(30% 36% at 34% 104%, rgba(255, 170, 110, 0.35), transparent 70%),
+    radial-gradient(34% 58% at 84% 52%, rgba(12, 8, 251, 0.58), transparent 72%),
+    radial-gradient(18% 30% at 76% 50%, rgba(170, 185, 255, 0.16), transparent 70%);
+}
+
+/* Vidro canelado: faixas verticais com borda clara e sombra, sobre a luz */
+.hero__canelado {
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.32) 0px,
+    rgba(255, 255, 255, 0.02) 30px,
+    rgba(255, 255, 255, 0.07) 92px,
+    rgba(255, 255, 255, 0.2) 104px,
+    rgba(0, 0, 0, 0.3) 108px,
+    rgba(0, 0, 0, 0.32) 112px
+  );
+  mix-blend-mode: overlay;
+  -webkit-mask-image: linear-gradient(180deg, transparent 8%, #000 40%, #000 82%, transparent);
+  mask-image: linear-gradient(180deg, transparent 8%, #000 40%, #000 82%, transparent);
+}
+
+/* Grão de filme bem leve (imagem SVG estática, não pesa) */
+.hero__grao {
+  position: absolute;
+  inset: 0;
+  opacity: 0.07;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* Escurece o topo (atrás do menu) e funde a base com o fundo da página */
+.hero__fundo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, var(--bg) 0%, transparent 28%),
+    linear-gradient(0deg, var(--bg) 0%, transparent 22%);
+}
+
+.hero__conteudo {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "etiqueta etiqueta"
+    "titulo   titulo"
+    ".        rodape";
+  row-gap: 1.5rem;
+}
+.hero__conteudo > .etiqueta { grid-area: etiqueta; }
+
+.hero__titulo {
+  grid-area: titulo;
+  max-width: 13ch;
+  font-size: var(--fs-display);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
+}
+/* Cada linha um tom mais apagada (como na referência) */
+.hero__linha { display: block; }
+.hero__linha:nth-child(2) { color: rgba(255, 255, 255, 0.8); }
+.hero__linha:nth-child(n + 3) { color: rgba(255, 255, 255, 0.62); }
+
+.hero__rodape {
+  grid-area: rodape;
+  display: grid;
+  gap: 1.5rem;
+  max-width: 30rem;
+  margin-top: clamp(1.5rem, 6vh, 4rem);
+}
+.hero__sub { color: var(--texto-2); font-size: var(--fs-corpo); }
+.hero__acoes { display: flex; flex-wrap: wrap; gap: 0.75rem; }
+
+.hero__dica {
+  position: absolute;
+  left: var(--margem);
+  bottom: 2rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  font-size: 0.8125rem;
+  color: var(--texto-2);
+  text-decoration: none;
+}
+.hero__dica .icone { width: 1rem; height: 1rem; }
+
+/* ---------- 9. Seções ---------- */
+.secao {
+  position: relative;
+  padding-block: clamp(5rem, 11vw, 9rem);
+  border-top: 1px solid var(--linha);
+}
+.secao__cabeca {
+  display: grid;
+  gap: 1rem;
+  max-width: 52rem;
+  margin-bottom: clamp(2.5rem, 6vw, 4.5rem);
+}
+.secao__titulo {
+  font-size: var(--fs-h2);
+  line-height: 1.05;
+  letter-spacing: -0.03em;
+}
+.secao__intro { max-width: 36rem; color: var(--texto-2); }
+
+/* ---------- 10. Projetos ---------- */
+.projetos {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(2rem, 4vw, 3.5rem) clamp(1.25rem, 3vw, 2.5rem);
+}
+
+.janela {
+  overflow: hidden;
+  border-radius: 20px;
+  background: var(--bg-2);
+  box-shadow: 0 0 0 1px var(--linha-forte), 0 30px 60px -30px rgba(0, 0, 0, 0.8);
+}
+.janela__barra {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 44px;
+  padding: 0 16px;
+  background: rgba(255, 255, 255, 0.03);
+  border-bottom: 1px solid var(--linha);
+}
+.janela__luzes { display: flex; gap: 8px; }
+.janela__luzes i { width: 10px; height: 10px; border-radius: 50%; background: #FF5F56; }
+.janela__luzes i:nth-child(2) { background: #FFBD2E; }
+.janela__luzes i:nth-child(3) { background: #27C93F; }
+.janela__url {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 60%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.55);
+}
+.janela__tela {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 16 / 10;
+  padding: 1.5rem;
+  background:
+    radial-gradient(60% 80% at 15% 100%, rgba(249, 109, 20, 0.12), transparent 70%),
+    radial-gradient(60% 80% at 90% 0%, rgba(12, 8, 251, 0.14), transparent 70%),
+    var(--bg-2);
+}
+.janela__tela .em-breve { border-style: dashed; }
+
+.projeto__info {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+.projeto__info .etiqueta { margin-bottom: 0.35rem; }
+.projeto__nome { font-size: var(--fs-h3); letter-spacing: -0.02em; line-height: 1.2; }
+
+/* ---------- 11. Serviços ---------- */
+.servicos {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1.5rem;
+}
+.servico {
+  display: grid;
+  align-content: start;
+  gap: 2.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--linha-forte);
+}
+.servico__num {
+  font-size: var(--fs-etiqueta);
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: var(--laranja);
+}
+.servico__nome { font-size: var(--fs-h3); line-height: 1.2; letter-spacing: -0.02em; }
+
+/* ---------- 12. Contato ---------- */
+.contato { overflow: hidden; isolation: isolate; text-align: center; }
+.contato__luz {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(40% 60% at 85% 100%, rgba(249, 109, 20, 0.45), transparent 72%),
+    radial-gradient(35% 55% at 10% 90%, rgba(12, 8, 251, 0.4), transparent 72%);
+}
+.contato__conteudo { display: grid; justify-items: center; gap: 1.5rem; }
+.contato .secao__titulo { max-width: 16ch; }
+/* Palavra em destaque: laranja (o azul puro some no fundo escuro) */
+.destaque { color: var(--laranja); }
+.contato .em-breve { width: min(100%, 36rem); margin-top: 1.5rem; }
+
+/* ---------- 13. Rodapé ---------- */
+.rodape { padding: clamp(3.5rem, 8vw, 5rem) 0 2rem; border-top: 1px solid var(--linha); }
+.rodape__grade { display: flex; flex-wrap: wrap; gap: 2.5rem 5rem; }
+.rodape__lista { display: grid; margin-top: 0.75rem; }
+.rodape__lista a,
+.rodape__topo {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--texto);
+  text-decoration: none;
+}
+@media (hover: hover) {
+  .rodape__lista a:hover,
+  .rodape__topo:hover { color: var(--laranja); }
+}
+.rodape__marca {
+  width: 100%;
+  height: auto;
+  margin: clamp(2.5rem, 6vw, 4rem) 0 1rem;
+  overflow: visible;
+}
+.rodape__marca text {
+  font-family: var(--fonte-titulo);
+  font-weight: 700;
+  font-size: 160px;
+  letter-spacing: -0.02em;
+  fill: #1c1d24;
+}
+.rodape__base {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1.5rem;
+  font-size: 0.8125rem;
+  color: var(--texto-2);
+}
+
+/* ---------- 14. Painel de pendências (só com MODO_RASCUNHO) ---------- */
+.rascunho {
+  position: fixed;
+  right: 16px;
+  top: calc(var(--menu-h) + 28px);
+  z-index: 60;
+  max-width: 300px;
+  border-radius: 16px;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+}
+.rascunho summary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0 1rem;
+  cursor: pointer;
+  font-weight: 600;
+  list-style: none;
+}
+.rascunho summary::-webkit-details-marker { display: none; }
+.rascunho summary::before {
+  content: "";
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--laranja);
+  box-shadow: 0 0 0 4px rgba(249, 109, 20, 0.2);
+}
+.rascunho ul { padding: 0 1rem 0.9rem 2.1rem; list-style: disc; color: var(--texto-2); }
+
+/* Botões do WhatsApp sem número: avisa no modo rascunho */
+.modo-rascunho [data-pendente="whatsapp"].botao::after {
+  content: "";
+  position: absolute;
+  top: -3px; right: -3px;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--laranja);
+  box-shadow: 0 0 0 2px var(--bg);
+}
+
+/* ---------- 15. Celular e tablet ---------- */
+@media (max-width: 1023px) {
+  .servicos { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 2.5rem; }
+}
+
+@media (max-width: 860px) {
+  .menu__links a { padding: 10px 11px; font-size: 0.875rem; }
+  .menu__cta { display: none; }
+}
+
+@media (max-width: 767px) {
+  :root { --menu-h: 56px; }
+
+  html { scroll-padding-top: 24px; }
+  body { padding-bottom: calc(var(--abas-h) + 32px + env(safe-area-inset-bottom)); }
+
+  /* Topo: só a logo, sem cápsula (a navegação vai para baixo) */
+  .topo { position: absolute; inset: 12px 0 auto; }
+  .menu,
+  .com-js.rolou .menu { background: none; backdrop-filter: none; -webkit-backdrop-filter: none; box-shadow: none; padding: 0; }
+  .menu::before, .menu__trilho, .menu__cta { display: none; }
+
+  /* Abas de vidro embaixo + botão redondo do WhatsApp ao lado */
+  .abas {
+    position: fixed;
+    left: 12px; right: 12px;
+    bottom: calc(12px + env(safe-area-inset-bottom));
+    z-index: 50;
+    display: flex;
+    gap: 10px;
+  }
+  .abas__lista {
+    flex: 1;
+    display: flex;
+    height: var(--abas-h);
+    padding: 4px;
+    border-radius: 999px;
+  }
+  .abas__lista a {
+    position: relative;
+    z-index: 1;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1;
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .abas__lista a .icone { width: 20px; height: 20px; }
+  .abas__lista a[aria-current="true"] { color: var(--laranja); }
+  .abas__whats {
+    position: relative;
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: var(--abas-h);
+    height: var(--abas-h);
+    border-radius: 50%;
+    background: var(--gradiente);
+    color: #fff;
+    box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.35), 0 12px 28px -8px rgba(0, 0, 0, 0.7);
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 0.15s var(--ease);
+  }
+  .abas__whats:active { transform: scale(0.94); }
+  .abas__whats svg { width: 26px; height: 26px; }
+  .modo-rascunho .abas__whats[data-pendente="whatsapp"]::after {
+    content: "";
+    position: absolute;
+    top: 2px; right: 2px;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--laranja);
+    box-shadow: 0 0 0 2px var(--bg);
+  }
+
+  /* Hero empilhado */
+  /* A base do hero desconta a altura das abas, para elas não cobrirem os botões */
+  .hero {
+    justify-content: flex-end;
+    padding-top: calc(var(--menu-h) + 72px);
+    padding-bottom: calc(var(--abas-h) + 40px + env(safe-area-inset-bottom));
+  }
+  .hero__conteudo {
+    grid-template-columns: 1fr;
+    grid-template-areas: "etiqueta" "titulo" "rodape";
+  }
+  .hero__rodape { margin-top: 0.5rem; max-width: 30rem; }
+  .hero__acoes { flex-direction: column; align-items: stretch; }
+  .hero__dica { display: none; }
+  .hero__luz {
+    background:
+      radial-gradient(70% 40% at 15% 100%, rgba(249, 109, 20, 0.6), transparent 72%),
+      radial-gradient(60% 40% at 95% 30%, rgba(12, 8, 251, 0.6), transparent 72%);
+  }
+  .hero__canelado {
+    background: repeating-linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.32) 0px,
+      rgba(255, 255, 255, 0.02) 16px,
+      rgba(255, 255, 255, 0.07) 50px,
+      rgba(255, 255, 255, 0.18) 57px,
+      rgba(0, 0, 0, 0.3) 60px,
+      rgba(0, 0, 0, 0.32) 62px
+    );
+  }
+
+  .projetos { grid-template-columns: 1fr; }
+  .projeto__info { flex-direction: column; align-items: flex-start; gap: 0.25rem; }
+
+  .servicos { grid-template-columns: 1fr; row-gap: 1.75rem; }
+  .servico { gap: 1rem; }
+
+  .rascunho { top: 12px; right: 12px; max-width: calc(100% - 24px); }
+}
+
+/* ---------- 16. Movimento reduzido e navegadores sem desfoque ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .vidro { background: rgba(18, 19, 24, 0.94); }
+  .botao--vidro { background: rgba(40, 41, 48, 0.95); }
+}

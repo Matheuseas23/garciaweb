@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="pt-BR" class="sem-js">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Garcia Web — Design e Desenvolvimento Web</title>
+  <meta name="description" content="Garcia Web: sites personalizados para negócios de São Paulo, do primeiro rascunho à publicação.">
+  <meta name="theme-color" content="#0D0E13">
+  <script>document.documentElement.classList.replace('sem-js', 'com-js');</script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
+  <link rel="stylesheet" href="css/estilos.css">
+
+  <script src="js/config.js" defer></script>
+  <script src="js/main.js" defer></script>
+</head>
+<body>
+  <a class="pular" href="#conteudo">Pular para o conteúdo</a>
+
+  <!-- ===== MENU (computador: cápsula de vidro no topo) ===== -->
+  <header class="topo">
+    <nav class="menu vidro" aria-label="Principal" data-nav>
+      <a class="menu__logo" href="#inicio" aria-label="Garcia Web, voltar ao início">
+        <span class="logo-pendente" data-logo>Logo</span>
+      </a>
+      <div class="menu__trilho" data-trilho>
+        <span class="marcador" data-marcador aria-hidden="true"></span>
+        <ul class="menu__links">
+          <li><a href="#projetos" data-secao="projetos">Projetos</a></li>
+          <li><a href="#servicos" data-secao="servicos">Serviços</a></li>
+          <li><a href="#processo" data-secao="processo">Processo</a></li>
+          <li><a href="#duvidas" data-secao="duvidas">Dúvidas</a></li>
+          <li><a href="#contato" data-secao="contato">Contato</a></li>
+        </ul>
+      </div>
+      <a class="botao botao--principal botao--p menu__cta" href="#contato" data-whatsapp>
+        <span class="botao__icone" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-whatsapp"/></svg></span>
+        WhatsApp
+      </a>
+    </nav>
+  </header>
+
+  <main id="conteudo">
+    <!-- ===== HERO ===== -->
+    <section id="inicio" class="hero" aria-labelledby="hero-titulo">
+      <div class="hero__fundo" aria-hidden="true">
+        <div class="hero__luz"></div>
+        <div class="hero__canelado"></div>
+        <div class="hero__grao"></div>
+      </div>
+
+      <div class="hero__conteudo container">
+        <p class="etiqueta">[ Design e desenvolvimento web ]</p>
+        <!-- O texto real vem de js/config.js (heroFrase). Este é só o reserva caso o JS falhe. -->
+        <h1 id="hero-titulo" class="hero__titulo" data-config="heroFrase">
+          <span class="hero__linha">Seu negócio</span>
+          <span class="hero__linha">merece um site</span>
+          <span class="hero__linha">à altura.</span>
+        </h1>
+        <div class="hero__rodape">
+          <p class="hero__sub" data-config="heroSubtitulo">Sites personalizados para negócios de São Paulo, do primeiro rascunho à publicação, com contato direto comigo.</p>
+          <div class="hero__acoes">
+            <a class="botao botao--principal" href="#contato" data-whatsapp>
+              <span class="botao__icone" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-whatsapp"/></svg></span>
+              Falar no WhatsApp
+            </a>
+            <a class="botao botao--vidro" href="#projetos">Ver projetos</a>
+          </div>
+        </div>
+      </div>
+
+      <a class="hero__dica" href="#projetos">
+        <svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-seta-baixo"/></svg>
+        Role para ver os projetos
+      </a>
+    </section>
+
+    <!-- ===== PROJETOS (iframes ao vivo entram na Etapa 4) ===== -->
+    <section id="projetos" class="secao" aria-labelledby="projetos-titulo">
+      <div class="container">
+        <header class="secao__cabeca">
+          <p class="etiqueta">[ Projetos ]</p>
+          <h2 id="projetos-titulo" class="secao__titulo">Sites que já estão no ar.</h2>
+          <p class="secao__intro">Cada card vai mostrar a página inicial do site funcionando de verdade.</p>
+        </header>
+
+        <div class="projetos">
+          <article class="projeto" data-projeto="acai">
+            <div class="janela">
+              <div class="janela__barra"><span class="janela__luzes" aria-hidden="true"><i></i><i></i><i></i></span><span class="janela__url">acaidoparque.vercel.app</span></div>
+              <div class="janela__tela"><p class="em-breve">Site ao vivo entra na Etapa 4</p></div>
+            </div>
+            <div class="projeto__info">
+              <div>
+                <p class="etiqueta" data-status>[ Status pendente ]</p>
+                <h3 class="projeto__nome">Açaí do Parque</h3>
+              </div>
+              <a class="link-seta" href="https://acaidoparque.vercel.app/" target="_blank" rel="noopener">Abrir site <svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-seta-diagonal"/></svg><span class="sr">(abre em nova aba)</span></a>
+            </div>
+          </article>
+
+          <article class="projeto" data-projeto="benedita">
+            <div class="janela">
+              <div class="janela__barra"><span class="janela__luzes" aria-hidden="true"><i></i><i></i><i></i></span><span class="janela__url">benedita-buffet.vercel.app</span></div>
+              <div class="janela__tela"><p class="em-breve">Site ao vivo entra na Etapa 4</p></div>
+            </div>
+            <div class="projeto__info">
+              <div>
+                <p class="etiqueta" data-status>[ Status pendente ]</p>
+                <h3 class="projeto__nome">Benedita Buffet</h3>
+              </div>
+              <a class="link-seta" href="https://benedita-buffet.vercel.app/" target="_blank" rel="noopener">Abrir site <svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-seta-diagonal"/></svg><span class="sr">(abre em nova aba)</span></a>
+            </div>
+          </article>
+
+          <article class="projeto" data-projeto="paris6">
+            <div class="janela">
+              <div class="janela__barra"><span class="janela__luzes" aria-hidden="true"><i></i><i></i><i></i></span><span class="janela__url">paris6cequeiracesar.vercel.app</span></div>
+              <div class="janela__tela"><p class="em-breve">Site ao vivo entra na Etapa 4</p></div>
+            </div>
+            <div class="projeto__info">
+              <div>
+                <p class="etiqueta" data-status>[ Status pendente ]</p>
+                <h3 class="projeto__nome">Paris 6</h3>
+              </div>
+              <a class="link-seta" href="https://paris6cequeiracesar.vercel.app/" target="_blank" rel="noopener">Abrir site <svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-seta-diagonal"/></svg><span class="sr">(abre em nova aba)</span></a>
+            </div>
+          </article>
+
+          <article class="projeto" data-projeto="inovatech">
+            <div class="janela">
+              <div class="janela__barra"><span class="janela__luzes" aria-hidden="true"><i></i><i></i><i></i></span><span class="janela__url">inovatech-tcc.vercel.app</span></div>
+              <div class="janela__tela"><p class="em-breve">Site ao vivo entra na Etapa 4</p></div>
+            </div>
+            <div class="projeto__info">
+              <div>
+                <p class="etiqueta" data-status>[ Projeto acadêmico ]</p>
+                <h3 class="projeto__nome">InovaTech TCC</h3>
+              </div>
+              <a class="link-seta" href="https://inovatech-tcc.vercel.app/" target="_blank" rel="noopener">Abrir site <svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-seta-diagonal"/></svg><span class="sr">(abre em nova aba)</span></a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== SERVIÇOS (descrições e animação na Etapa 5) ===== -->
+    <section id="servicos" class="secao" aria-labelledby="servicos-titulo">
+      <div class="container">
+        <header class="secao__cabeca">
+          <p class="etiqueta">[ Serviços ]</p>
+          <h2 id="servicos-titulo" class="secao__titulo">O que eu faço.</h2>
+        </header>
+        <ol class="servicos">
+          <li class="servico"><span class="servico__num">01</span><h3 class="servico__nome">Landing pages</h3></li>
+          <li class="servico"><span class="servico__num">02</span><h3 class="servico__nome">Sites institucionais</h3></li>
+          <li class="servico"><span class="servico__num">03</span><h3 class="servico__nome">Cardápios e catálogos digitais</h3></li>
+          <li class="servico"><span class="servico__num">04</span><h3 class="servico__nome">Melhorias e manutenção</h3></li>
+        </ol>
+      </div>
+    </section>
+
+    <!-- ===== PROCESSO (Etapa 5) ===== -->
+    <section id="processo" class="secao" aria-labelledby="processo-titulo">
+      <div class="container">
+        <header class="secao__cabeca">
+          <p class="etiqueta">[ Processo ]</p>
+          <h2 id="processo-titulo" class="secao__titulo">Como funciona.</h2>
+        </header>
+        <p class="em-breve">Etapas do processo e linha que se desenha com a rolagem: Etapa 5</p>
+      </div>
+    </section>
+
+    <!-- ===== DÚVIDAS (Etapa 5) ===== -->
+    <section id="duvidas" class="secao" aria-labelledby="duvidas-titulo">
+      <div class="container">
+        <header class="secao__cabeca">
+          <p class="etiqueta">[ Dúvidas ]</p>
+          <h2 id="duvidas-titulo" class="secao__titulo">Perguntas frequentes.</h2>
+        </header>
+        <p class="em-breve">Perguntas e respostas: Etapa 5</p>
+      </div>
+    </section>
+
+    <!-- ===== CONTATO (formulário na Etapa 6) ===== -->
+    <section id="contato" class="secao contato" aria-labelledby="contato-titulo">
+      <div class="contato__luz" aria-hidden="true"></div>
+      <div class="container contato__conteudo">
+        <p class="etiqueta">[ Vamos conversar? ]</p>
+        <h2 id="contato-titulo" class="secao__titulo">Vamos tirar o seu site <span class="destaque">do papel?</span></h2>
+        <a class="botao botao--principal" href="#contato" data-whatsapp>
+          <span class="botao__icone" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-whatsapp"/></svg></span>
+          Falar no WhatsApp
+        </a>
+        <p class="em-breve">Formulário que monta a mensagem e abre o WhatsApp: Etapa 6</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== RODAPÉ ===== -->
+  <footer class="rodape">
+    <div class="container">
+      <div class="rodape__grade">
+        <div>
+          <p class="etiqueta">[ Navegação ]</p>
+          <ul class="rodape__lista">
+            <li><a href="#projetos">Projetos</a></li>
+            <li><a href="#servicos">Serviços</a></li>
+            <li><a href="#processo">Processo</a></li>
+            <li><a href="#duvidas">Dúvidas</a></li>
+          </ul>
+        </div>
+        <div>
+          <p class="etiqueta">[ Contato ]</p>
+          <ul class="rodape__lista">
+            <li><a href="#contato" data-whatsapp>WhatsApp</a></li>
+            <li><a href="https://www.instagram.com/garciaaweb/" target="_blank" rel="noopener">Instagram @garciaaweb<span class="sr"> (abre em nova aba)</span></a></li>
+          </ul>
+        </div>
+      </div>
+      <svg class="rodape__marca" viewBox="0 0 1000 150" aria-hidden="true" focusable="false">
+        <text x="0" y="128" textLength="1000" lengthAdjust="spacing">GARCIA WEB</text>
+      </svg>
+      <div class="rodape__base">
+        <p>© 2026 Garcia Web · Design e desenvolvimento web</p>
+        <a class="rodape__topo" href="#inicio">Voltar ao topo</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ===== MENU (celular: abas de vidro embaixo + botão redondo do WhatsApp) ===== -->
+  <nav class="abas" aria-label="Navegação rápida" data-nav>
+    <div class="abas__lista vidro" data-trilho>
+      <span class="marcador" data-marcador aria-hidden="true"></span>
+      <a href="#projetos" data-secao="projetos"><svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-grade"/></svg>Projetos</a>
+      <a href="#servicos" data-secao="servicos"><svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-camadas"/></svg>Serviços</a>
+      <a href="#processo" data-secao="processo"><svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-rota"/></svg>Processo</a>
+      <a href="#contato" data-secao="contato"><svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-mensagem"/></svg>Contato</a>
+    </div>
+    <a class="abas__whats" href="#contato" data-whatsapp aria-label="Falar no WhatsApp">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-whatsapp"/></svg>
+    </a>
+  </nav>
+
+  <!-- ===== ÍCONES (Lucide, licença ISC; WhatsApp e Instagram: Simple Icons, CC0) ===== -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <symbol id="i-whatsapp" viewBox="0 0 24 24"><path fill="currentColor" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></symbol>
+    <symbol id="i-grade" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></symbol>
+    <symbol id="i-camadas" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"/><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"/><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"/></symbol>
+    <symbol id="i-rota" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="19" r="3"/><path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H15"/><circle cx="18" cy="5" r="3"/></symbol>
+    <symbol id="i-mensagem" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2.992 16.342a2 2 0 0 1 .094 1.167l-1.065 3.29a1 1 0 0 0 1.236 1.168l3.413-.998a2 2 0 0 1 1.099.092 10 10 0 1 0-4.777-4.719"/></symbol>
+    <symbol id="i-seta-diagonal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h10v10"/><path d="M7 17 17 7"/></symbol>
+    <symbol id="i-seta-baixo" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></symbol>
+  </svg>
+</body>
+</html>
