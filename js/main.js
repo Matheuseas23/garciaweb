@@ -91,6 +91,85 @@
     });
   }
 
+  /* ---------- 1b. Formulário de contato: monta a mensagem e abre o WhatsApp ---------- */
+  // Não há servidor: nada é enviado pelo site. O WhatsApp abre com o texto pronto
+  // e a pessoa decide se envia.
+  function iniciarFormulario() {
+    const ano = document.querySelector('[data-ano]');
+    if (ano) ano.textContent = new Date().getFullYear();
+
+    const form = document.querySelector('[data-formulario]');
+    if (!form) return;
+    const caixaErros = form.querySelector('[data-erros]');
+    const obrigatorios = [
+      { nome: 'nome', aviso: 'Escreva o seu nome.' },
+      { nome: 'negocio', aviso: 'Escreva o nome do negócio.' },
+    ];
+
+    function mostrarErro(campo, aviso) {
+      const el = form.elements[campo];
+      const saida = form.querySelector('[data-erro-de="' + campo + '"]');
+      if (aviso) el.setAttribute('aria-invalid', 'true');
+      else el.removeAttribute('aria-invalid');
+      if (saida) saida.textContent = aviso || '';
+    }
+
+    // O erro some assim que a pessoa corrige o campo.
+    obrigatorios.forEach(({ nome }) => {
+      form.elements[nome].addEventListener('input', (e) => {
+        if (e.target.value.trim()) mostrarErro(nome, '');
+      });
+    });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const valor = (nome) => String((form.elements[nome] || {}).value || '').trim();
+
+      const erros = obrigatorios.filter(({ nome }) => !valor(nome));
+      obrigatorios.forEach(({ nome, aviso }) => mostrarErro(nome, valor(nome) ? '' : aviso));
+      if (erros.length) {
+        // Resumo no topo, com link para cada campo, e o foco vai para ele.
+        const titulo = document.createElement('p');
+        titulo.textContent = erros.length === 1 ? 'Falta 1 informação:' : 'Faltam ' + erros.length + ' informações:';
+        const lista = document.createElement('ul');
+        erros.forEach(({ nome, aviso }) => {
+          const li = document.createElement('li');
+          const a = document.createElement('a');
+          a.href = '#' + form.elements[nome].id;
+          a.textContent = aviso;
+          a.addEventListener('click', (ev) => { ev.preventDefault(); form.elements[nome].focus(); });
+          li.appendChild(a);
+          lista.appendChild(li);
+        });
+        caixaErros.replaceChildren(titulo, lista);
+        caixaErros.hidden = false;
+        caixaErros.focus();
+        return;
+      }
+      caixaErros.hidden = true;
+
+      const numero = String(cfg.whatsapp || '').replace(/\D/g, '');
+      if (!numero) return;
+      const linhas = [
+        'Olá, Matheus! Vim pelo site da Garcia Web.',
+        '',
+        '*Nome:* ' + valor('nome'),
+        '*Negócio:* ' + valor('negocio'),
+      ];
+      if (valor('tipo')) linhas.push('*Tipo de site:* ' + valor('tipo'));
+      if (valor('instagram')) linhas.push('*Instagram/site:* ' + valor('instagram'));
+      if (valor('mensagem')) linhas.push('', valor('mensagem'));
+      const url = 'https://wa.me/' + numero + '?text=' + encodeURIComponent(linhas.join('\n'));
+
+      window.__ultimoWhatsapp = url; // lido pelo modo de teste
+      if (TESTE) return;
+      // Nova aba; se o navegador bloquear, abre na mesma aba.
+      const aba = window.open(url, '_blank');
+      if (aba) aba.opener = null;
+      else location.href = url;
+    });
+  }
+
   /* ---------- 2. Painel de pendências (MODO_RASCUNHO) ---------- */
   function painelPendencias() {
     if (!cfg.MODO_RASCUNHO) return;
@@ -676,6 +755,13 @@
           perguntas: $$('.pergunta').length,
           perguntaAberta: $$('.pergunta[open]').length,
         },
+        formulario: {
+          resumoErros: (() => { const c = document.querySelector('[data-erros]'); return c && !c.hidden ? c.textContent : null; })(),
+          focoNoResumo: document.activeElement === document.querySelector('[data-erros]'),
+          camposInvalidos: $$('[data-formulario] [aria-invalid="true"]').map((el) => el.name),
+          mensagem: window.__ultimoWhatsapp ? decodeURIComponent(window.__ultimoWhatsapp.split('?text=')[1]) : null,
+          link: window.__ultimoWhatsapp ? window.__ultimoWhatsapp.split('?')[0] : null,
+        },
         logos: $$('[data-logo] img').map((i) => i.complete && i.naturalWidth > 0),
         telaCheiaAberta: Boolean(document.querySelector('[data-tela-cheia][open]')),
         animacao: {
@@ -721,6 +807,18 @@
       if (mais) window.scrollBy(0, mais);
       const abrir = parametros.get('abrir');
       if (abrir !== null) $$('.pergunta')[Number(abrir)].open = true;
+      const form = parametros.get('form');
+      const f = document.querySelector('[data-formulario]');
+      if (form && f) {
+        if (form === 'cheio') {
+          f.elements.nome.value = 'Ana Souza';
+          f.elements.negocio.value = 'Doceria da Ana & Cia';
+          f.querySelector('input[name="tipo"][value="Cardápio ou catálogo digital"]').checked = true;
+          f.elements.instagram.value = '@doceriadaana';
+          f.elements.mensagem.value = 'Quero um cardápio com pedidos.\nTemos 30 doces.';
+        }
+        f.requestSubmit();
+      }
       // O headless não dispara "scroll" sozinho (sem quadros de desenho).
       window.dispatchEvent(new Event('scroll'));
       if (window.ScrollTrigger) ScrollTrigger.update();
@@ -730,6 +828,7 @@
   }
 
   aplicarConfig();
+  iniciarFormulario();
   painelPendencias();
   iniciarMenu();
   iniciarPortfolio();

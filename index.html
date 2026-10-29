@@ -346,17 +346,60 @@
       </div>
     </section>
 
-    <!-- ===== CONTATO (formulário na Etapa 6) ===== -->
+    <!-- ===== CONTATO (o formulário monta a mensagem e abre o WhatsApp; sem servidor) ===== -->
     <section id="contato" class="secao contato" aria-labelledby="contato-titulo">
       <div class="contato__luz" aria-hidden="true"></div>
-      <div class="container contato__conteudo">
-        <p class="etiqueta">[ Vamos conversar? ]</p>
-        <h2 id="contato-titulo" class="secao__titulo">Vamos tirar o seu site <span class="destaque">do papel?</span></h2>
-        <a class="botao botao--principal" href="#contato" data-whatsapp>
-          <span class="botao__icone" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-whatsapp"/></svg></span>
-          Falar no WhatsApp
-        </a>
-        <p class="em-breve">Formulário que monta a mensagem e abre o WhatsApp: Etapa 6</p>
+      <div class="container contato__grade">
+        <header class="contato__cabeca">
+          <p class="etiqueta">[ Vamos conversar? ]</p>
+          <h2 id="contato-titulo" class="secao__titulo">Vamos tirar o seu site <span class="destaque">do papel?</span></h2>
+          <p class="secao__intro">Conte um pouco sobre o seu negócio. A mensagem já chega pronta no WhatsApp, e a resposta vem de quem vai fazer o seu site.</p>
+          <a class="botao botao--vidro" href="#contato" data-whatsapp>
+            <span class="botao__icone" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-whatsapp"/></svg></span>
+            Prefiro chamar direto
+          </a>
+        </header>
+
+        <form class="formulario vidro" data-formulario novalidate>
+          <div class="formulario__erros" data-erros tabindex="-1" role="alert" hidden></div>
+
+          <div class="campo">
+            <label for="f-nome">Seu nome</label>
+            <input id="f-nome" name="nome" type="text" autocomplete="name" required maxlength="80" aria-describedby="f-nome-erro">
+            <p class="campo__erro" id="f-nome-erro" data-erro-de="nome"></p>
+          </div>
+          <div class="campo">
+            <label for="f-negocio">Nome do negócio</label>
+            <input id="f-negocio" name="negocio" type="text" autocomplete="organization" required maxlength="100" aria-describedby="f-negocio-erro">
+            <p class="campo__erro" id="f-negocio-erro" data-erro-de="negocio"></p>
+          </div>
+
+          <fieldset class="campo campo--opcoes">
+            <legend>Que tipo de site? <span class="campo__opcional">(opcional)</span></legend>
+            <div class="opcoes">
+              <label class="opcao"><input type="radio" name="tipo" value="Landing page"><span>Landing page</span></label>
+              <label class="opcao"><input type="radio" name="tipo" value="Site institucional"><span>Site institucional</span></label>
+              <label class="opcao"><input type="radio" name="tipo" value="Cardápio ou catálogo digital"><span>Cardápio ou catálogo</span></label>
+              <label class="opcao"><input type="radio" name="tipo" value="Melhorias em um site que já existe"><span>Melhorias em um site</span></label>
+              <label class="opcao"><input type="radio" name="tipo" value="Ainda não sei"><span>Ainda não sei</span></label>
+            </div>
+          </fieldset>
+
+          <div class="campo">
+            <label for="f-instagram">Instagram ou site atual <span class="campo__opcional">(opcional)</span></label>
+            <input id="f-instagram" name="instagram" type="text" maxlength="120" placeholder="@seunegocio">
+          </div>
+          <div class="campo">
+            <label for="f-mensagem">Conte um pouco <span class="campo__opcional">(opcional)</span></label>
+            <textarea id="f-mensagem" name="mensagem" rows="3" maxlength="800" placeholder="O que você vende, o que precisa no site…"></textarea>
+          </div>
+
+          <button class="botao botao--principal formulario__enviar" type="submit">
+            <span class="botao__icone" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-whatsapp"/></svg></span>
+            Enviar pelo WhatsApp
+          </button>
+          <p class="formulario__nota">Nada é enviado por este site: o botão só abre o WhatsApp com a mensagem escrita, e você decide se envia.</p>
+        </form>
       </div>
     </section>
   </main>
@@ -365,6 +408,20 @@
   <footer class="rodape">
     <div class="container">
       <div class="rodape__grade">
+        <div class="rodape__marca-texto">
+          <p class="etiqueta">[ Garcia Web ]</p>
+          <p>Design e desenvolvimento web para negócios de São Paulo.</p>
+          <p>Não criamos sites. Criamos presença digital.</p>
+        </div>
+        <div>
+          <p class="etiqueta">[ Serviços ]</p>
+          <ul class="rodape__lista">
+            <li><a href="#servicos">Landing pages</a></li>
+            <li><a href="#servicos">Sites institucionais</a></li>
+            <li><a href="#servicos">Cardápios e catálogos</a></li>
+            <li><a href="#servicos">Melhorias e manutenção</a></li>
+          </ul>
+        </div>
         <div>
           <p class="etiqueta">[ Navegação ]</p>
           <ul class="rodape__lista">
@@ -377,7 +434,7 @@
         <div>
           <p class="etiqueta">[ Contato ]</p>
           <ul class="rodape__lista">
-            <li><a href="#contato" data-whatsapp>WhatsApp</a></li>
+            <li><a href="#contato" data-whatsapp>WhatsApp (11) 97885-4658<span class="sr"> (abre o WhatsApp)</span></a></li>
             <li><a href="https://www.instagram.com/garciaaweb/" target="_blank" rel="noopener">Instagram @garciaaweb<span class="sr"> (abre em nova aba)</span></a></li>
           </ul>
         </div>
@@ -386,7 +443,7 @@
         <text x="0" y="128" textLength="1000" lengthAdjust="spacing">GARCIA WEB</text>
       </svg>
       <div class="rodape__base">
-        <p>© 2026 Garcia Web · Design e desenvolvimento web</p>
+        <p>© <span data-ano>2026</span> Garcia Web · São Paulo, SP</p>
         <a class="rodape__topo" href="#inicio">Voltar ao topo</a>
       </div>
     </div>

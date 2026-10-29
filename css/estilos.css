@@ -864,15 +864,109 @@ h1, h2, h3 {
     radial-gradient(40% 60% at 85% 100%, rgba(249, 109, 20, 0.45), transparent 72%),
     radial-gradient(35% 55% at 10% 90%, rgba(12, 8, 251, 0.4), transparent 72%);
 }
-.contato__conteudo { display: grid; justify-items: center; gap: 1.5rem; }
-.contato .secao__titulo { max-width: 16ch; }
+.contato { text-align: left; }
+.contato__grade {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  gap: clamp(2.5rem, 6vw, 6rem);
+  align-items: start;
+}
+.contato__cabeca { display: grid; justify-items: start; gap: 1.25rem; }
+.contato__cabeca .botao { margin-top: 0.5rem; }
+.contato .secao__titulo { max-width: 12ch; }
 /* Palavra em destaque: laranja (o azul puro some no fundo escuro) */
 .destaque { color: var(--laranja); font-style: normal; }
-.contato .em-breve { width: min(100%, 36rem); margin-top: 1.5rem; }
+
+/* Formulário: cartão de vidro, campos só com a linha embaixo */
+.formulario {
+  display: grid;
+  gap: 1.5rem;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+  border-radius: var(--raio-card);
+}
+.sem-js .formulario { display: none; } /* sem JS ele não teria como abrir o WhatsApp */
+.formulario__erros {
+  padding: 0.9rem 1.1rem;
+  border-radius: 14px;
+  background: rgba(249, 109, 20, 0.1);
+  box-shadow: inset 0 0 0 1px rgba(249, 109, 20, 0.45);
+  font-size: 0.9375rem;
+}
+.formulario__erros:focus { outline: none; }
+.formulario__erros ul { margin-top: 0.35rem; padding-left: 1.1rem; list-style: disc; }
+.formulario__erros a { color: var(--texto); }
+.campo { display: grid; gap: 0.4rem; min-width: 0; border: 0; }
+.campo label,
+.campo legend {
+  padding: 0;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+}
+.campo__opcional { font-weight: 400; color: var(--texto-2); }
+.campo input,
+.campo textarea {
+  width: 100%;
+  min-height: 48px;
+  padding: 0.6rem 0;
+  border: 0;
+  border-bottom: 1px solid var(--linha-forte);
+  border-radius: 0;
+  background: transparent;
+  color: var(--texto);
+  font: inherit;
+  font-size: 1rem; /* 16 px: o iPhone não dá zoom ao tocar no campo */
+  transition: border-color 0.2s var(--ease);
+}
+.campo textarea { resize: vertical; min-height: 88px; }
+.campo input::placeholder,
+.campo textarea::placeholder { color: rgba(148, 163, 184, 0.6); }
+.campo input:focus,
+.campo textarea:focus { outline: none; border-bottom-color: var(--laranja); }
+.campo input:focus-visible,
+.campo textarea:focus-visible { box-shadow: 0 1px 0 0 var(--laranja); }
+.campo [aria-invalid="true"] { border-bottom-color: var(--laranja); }
+.campo__erro { min-height: 0; font-size: 0.8125rem; color: #FFB48A; }
+.campo__erro:empty { display: none; }
+
+.campo--opcoes { margin: 0; padding: 0; }
+.campo--opcoes legend { margin-bottom: 0.6rem; }
+.opcoes { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.opcao { position: relative; cursor: pointer; }
+.opcao input { position: absolute; opacity: 0; pointer-events: none; }
+.opcao span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 1rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+  font-size: 0.875rem;
+  color: rgba(255, 255, 255, 0.85);
+  transition: background 0.2s var(--ease), box-shadow 0.2s var(--ease), color 0.2s var(--ease);
+}
+.opcao input:checked + span {
+  background: rgba(249, 109, 20, 0.14);
+  box-shadow: inset 0 0 0 1px var(--laranja);
+  color: var(--texto);
+}
+.opcao input:focus-visible + span { outline: 2px solid var(--laranja); outline-offset: 2px; }
+@media (hover: hover) {
+  .opcao:hover span { background: rgba(255, 255, 255, 0.08); }
+}
+.formulario__enviar { justify-self: start; }
+.formulario__nota { font-size: 0.8125rem; color: var(--texto-2); }
 
 /* ---------- 13. Rodapé ---------- */
 .rodape { padding: clamp(3.5rem, 8vw, 5rem) 0 2rem; border-top: 1px solid var(--linha); }
-.rodape__grade { display: flex; flex-wrap: wrap; gap: 2.5rem 5rem; }
+.rodape__grade {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) repeat(3, minmax(0, 1fr));
+  gap: 2.5rem clamp(2rem, 5vw, 5rem);
+}
+.rodape__marca-texto { display: grid; align-content: start; gap: 0.5rem; max-width: 22rem; color: var(--texto-2); }
+.rodape__marca-texto .etiqueta { margin-bottom: 0.25rem; }
 .rodape__lista { display: grid; margin-top: 0.75rem; }
 .rodape__lista a,
 .rodape__topo {
@@ -957,6 +1051,9 @@ h1, h2, h3 {
 }
 
 @media (max-width: 860px) {
+  .contato__grade { grid-template-columns: 1fr; }
+  .rodape__grade { grid-template-columns: 1fr 1fr; }
+  .rodape__marca-texto { grid-column: 1 / -1; }
   .menu__links a { padding: 10px 11px; font-size: 0.875rem; }
   .menu__cta { display: none; }
 }
@@ -1100,6 +1197,8 @@ h1, h2, h3 {
   .duas-colunas { grid-template-columns: 1fr; gap: 2.5rem; }
   .duas-colunas__fixo { position: static; }
   .pergunta__resposta { padding-right: 0; }
+
+  .formulario__enviar { justify-self: stretch; }
 
   .rascunho { top: 12px; right: 12px; max-width: calc(100% - 24px); }
 }
