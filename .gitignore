@@ -3,3 +3,14 @@ Thumbs.db
 desktop.ini
 node_modules/
 .vercel
+
+# Arquivos internos da Garcia Web: ficam nesta pasta, mas NÃO vão para o GitHub
+# (preços, metas, histórico com o Claude, material de design e configuração do editor).
+/CLAUDE.md
+/garcia-claude/
+/DESIGN.md
+/botoesliquidglass.png
+/image.png
+/referencia.png
+/logo-garcia-web-transparente-HD.png
+/.vscode/
