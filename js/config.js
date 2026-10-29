@@ -24,26 +24,25 @@ window.GARCIA = {
   heroSubtitulo:
     'Sites personalizados para negócios de São Paulo, do primeiro rascunho à publicação, com contato direto comigo.',
 
-  // PENDENTE: número do WhatsApp com DDI e DDD, só números.
-  // Exemplo: '5511999999999'. Enquanto for null, os botões
-  // do WhatsApp levam para a seção de contato.
-  whatsapp: null,
+  // Número do WhatsApp com DDI e DDD, só números (confirmado em 29/10).
+  // Se virar null, os botões do WhatsApp levam para a seção de contato.
+  whatsapp: '5511978854658',
 
   // Mensagem que já aparece escrita quando a pessoa abre o WhatsApp.
   mensagemPadrao:
     'Olá! Vim pelo site da Garcia Web e quero conversar sobre um site para o meu negócio.',
 
-  // PENDENTE: logo PNG com fundo transparente (ou SVG).
-  // Coloque o arquivo em assets/ e escreva o caminho aqui,
-  // por exemplo: 'assets/logo-garcia-web.png'.
-  logo: null,
+  // Logo com fundo transparente: arquivo original do Matheus, sem alteração.
+  logo: 'assets/logo-garcia-web-transparente-HD.png',
+  // Largura e altura do arquivo, em px (reserva o espaço e a página não "pula").
+  logoTamanho: [2454, 1328],
 
-  // PENDENTE: etiqueta de cada projeto do portfólio.
-  // Use 'demonstracao', 'academico' ou 'cliente'. null = pendente.
+  // Etiqueta de cada projeto do portfólio:
+  // 'demonstracao', 'academico' ou 'cliente'. null = pendente.
   projetos: {
-    acai: { status: null },
-    benedita: { status: null },
-    paris6: { status: null },
-    inovatech: { status: 'academico' }, // confirmado: projeto acadêmico (TCC)
+    acai: { status: 'cliente' },      // confirmado em 29/10
+    benedita: { status: 'cliente' },  // confirmado em 29/10
+    paris6: { status: 'cliente' },    // confirmado em 29/10
+    inovatech: { status: 'academico' }, // projeto acadêmico (TCC)
   },
 };

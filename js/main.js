@@ -38,6 +38,7 @@
     if (cfg.logo) {
       $$('[data-logo]').forEach((el) => {
         const img = new Image();
+        if (Array.isArray(cfg.logoTamanho)) [img.width, img.height] = cfg.logoTamanho;
         img.src = cfg.logo;
         img.alt = 'Garcia Web';
         img.decoding = 'async';
@@ -585,6 +586,8 @@
           return [c.dataset.projeto, t ? t.dataset.estado || '-' : '-', Boolean(f), t ? t.style.getPropertyValue('--escala') : '', f ? getComputedStyle(f).pointerEvents : ''];
         }),
         sitesLigados: $$('[data-tela] iframe').length,
+        linkWhatsapp: (document.querySelector('.hero [data-whatsapp]') || {}).href || null,
+        logos: $$('[data-logo] img').map((i) => i.complete && i.naturalWidth > 0),
         telaCheiaAberta: Boolean(document.querySelector('[data-tela-cheia][open]')),
         animacao: {
           gsap: Boolean(window.gsap),
