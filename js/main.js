@@ -1,7 +1,8 @@
 /* ==========================================================
    GARCIA WEB — comportamento da página
-   Etapa 2: configurações (config.js), menu com marcador
-   de seção ativa e painel de pendências.
+   Configurações (config.js), formulário de contato, menu com
+   marcador de seção ativa, portfólio ao vivo, animações e
+   modo de teste (?teste).
    ========================================================== */
 (() => {
   'use strict';

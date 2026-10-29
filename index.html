@@ -7,6 +7,39 @@
   <meta name="description" content="Garcia Web: não criamos sites, criamos presença digital. Sites personalizados para negócios de São Paulo, do primeiro rascunho à publicação.">
 
   <meta name="theme-color" content="#0D0E13">
+
+  <!-- Ícones (logo original, só reduzida, sobre o fundo da marca) -->
+  <link rel="icon" href="favicon.ico" sizes="48x48">
+  <link rel="icon" href="assets/icone-32.png" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="assets/icone-180.png">
+
+  <!-- Prévia do link no WhatsApp, Instagram e Facebook.
+       PENDENTE: depois de publicar, trocar "assets/compartilhar.png" pelo endereço
+       completo (ex.: https://SEU-DOMINIO/assets/compartilhar.png): o WhatsApp
+       só mostra a imagem com o endereço completo. -->
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:site_name" content="Garcia Web">
+  <meta property="og:title" content="Garcia Web — Não criamos sites. Criamos presença digital.">
+  <meta property="og:description" content="Sites personalizados para negócios de São Paulo, do primeiro rascunho à publicação, com contato direto com quem faz o seu site.">
+  <meta property="og:image" content="assets/compartilhar.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Logo da Garcia Web sobre fundo escuro com luzes laranja e azul">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- Dados para o Google entender o negócio -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "ProfessionalService",
+      "name": "Garcia Web",
+      "description": "Design e desenvolvimento de sites personalizados para negócios de São Paulo.",
+      "telephone": "+55 11 97885-4658",
+      "areaServed": { "@type": "City", "name": "São Paulo" },
+      "sameAs": ["https://www.instagram.com/garciaaweb/"]
+    }
+  </script>
   <script>
     // Prepara a abertura animada (frase subindo linha a linha). Se ela não
     // começar em 2,5 s (internet lenta, CDN fora do ar), mostra tudo parado.
@@ -100,7 +133,7 @@
       </div>
     </section>
 
-    <!-- ===== PROJETOS (iframes ao vivo entram na Etapa 4) ===== -->
+    <!-- ===== PROJETOS (cada card liga o site de verdade num iframe) ===== -->
     <section id="projetos" class="secao" aria-labelledby="projetos-titulo">
       <div class="container">
         <header class="secao__cabeca">

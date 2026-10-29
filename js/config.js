@@ -3,13 +3,13 @@
    ---------------------------------------------------------
    Edite SÓ este arquivo para trocar a frase do início, o
    número do WhatsApp, a logo e as etiquetas dos projetos.
-   Tudo o que está marcado como PENDENTE ainda precisa de
-   resposta do Matheus antes de publicar.
+   Se algum valor virar null, ele aparece no painel
+   "Pendências" (com MODO_RASCUNHO: true).
    ========================================================= */
 window.GARCIA = {
   // Mostra o painel "Pendências" no canto da tela.
-  // Deixe false antes de publicar.
-  MODO_RASCUNHO: true,
+  // Deixe false no site publicado (desligado em 29/10: nada pendente).
+  MODO_RASCUNHO: false,
 
   // Rolagem suave (Lenis). Desligada: a rolagem normal do
   // navegador funciona melhor com os iframes e no celular.

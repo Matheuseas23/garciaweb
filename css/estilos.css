@@ -152,16 +152,6 @@ h1, h2, h3 {
   .link-seta:hover .icone { transform: translate(2px, -2px); }
 }
 
-/* Caixa de "em construção" das próximas etapas */
-.em-breve {
-  padding: 2.5rem 1.5rem;
-  border: 1px dashed rgba(255, 255, 255, 0.18);
-  border-radius: var(--raio-card);
-  color: var(--texto-2);
-  font-size: 0.875rem;
-  text-align: center;
-}
-
 /* Espaço reservado da logo, até chegar o PNG transparente */
 .logo-pendente {
   display: inline-grid;
