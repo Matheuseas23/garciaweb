@@ -106,63 +106,93 @@
         <header class="secao__cabeca">
           <p class="etiqueta">[ Projetos ]</p>
           <h2 id="projetos-titulo" class="secao__titulo">Sites que já estão no ar.</h2>
-          <p class="secao__intro">Cada card vai mostrar a página inicial do site funcionando de verdade.</p>
+          <p class="secao__intro">Cada card mostra a página inicial do site funcionando de verdade. Use “Interagir” para navegar por ele.</p>
         </header>
 
+        <!-- Cada card: o js/main.js coloca o site ao vivo (iframe) dentro da moldura
+             quando o card chega perto da tela, com no máximo 2 sites ligados ao mesmo tempo. -->
         <div class="projetos">
-          <article class="projeto" data-projeto="acai">
+          <article class="projeto" data-projeto="acai" data-url="https://acaidoparque.vercel.app/">
             <div class="janela">
-              <div class="janela__barra"><span class="janela__luzes" aria-hidden="true"><i></i><i></i><i></i></span><span class="janela__url">acaidoparque.vercel.app</span></div>
-              <div class="janela__tela"><p class="em-breve">Site ao vivo entra na Etapa 4</p></div>
+              <div class="janela__barra">
+                <span class="janela__luzes" aria-hidden="true"><i></i><i></i><i></i></span>
+                <span class="janela__url">acaidoparque.vercel.app</span>
+                <button class="janela__sair" type="button" data-sair hidden>Sair do site</button>
+              </div>
+              <div class="janela__tela" data-tela><p class="tela__status" data-status-tela>Site ao vivo: abra pelo link abaixo</p></div>
             </div>
             <div class="projeto__info">
               <div>
                 <p class="etiqueta" data-status>[ Status pendente ]</p>
                 <h3 class="projeto__nome">Açaí do Parque</h3>
               </div>
-              <a class="link-seta" href="https://acaidoparque.vercel.app/" target="_blank" rel="noopener">Abrir site <svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-seta-diagonal"/></svg><span class="sr">(abre em nova aba)</span></a>
+              <div class="projeto__acoes">
+                <button class="botao botao--vidro botao--p" type="button" data-interagir aria-pressed="false" hidden>Interagir</button>
+                <a class="link-seta" href="https://acaidoparque.vercel.app/" target="_blank" rel="noopener">Abrir site <svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-seta-diagonal"/></svg><span class="sr">(abre em nova aba)</span></a>
+              </div>
             </div>
           </article>
 
-          <article class="projeto" data-projeto="benedita">
+          <article class="projeto" data-projeto="benedita" data-url="https://benedita-buffet.vercel.app/">
             <div class="janela">
-              <div class="janela__barra"><span class="janela__luzes" aria-hidden="true"><i></i><i></i><i></i></span><span class="janela__url">benedita-buffet.vercel.app</span></div>
-              <div class="janela__tela"><p class="em-breve">Site ao vivo entra na Etapa 4</p></div>
+              <div class="janela__barra">
+                <span class="janela__luzes" aria-hidden="true"><i></i><i></i><i></i></span>
+                <span class="janela__url">benedita-buffet.vercel.app</span>
+                <button class="janela__sair" type="button" data-sair hidden>Sair do site</button>
+              </div>
+              <div class="janela__tela" data-tela><p class="tela__status" data-status-tela>Site ao vivo: abra pelo link abaixo</p></div>
             </div>
             <div class="projeto__info">
               <div>
                 <p class="etiqueta" data-status>[ Status pendente ]</p>
                 <h3 class="projeto__nome">Benedita Buffet</h3>
               </div>
-              <a class="link-seta" href="https://benedita-buffet.vercel.app/" target="_blank" rel="noopener">Abrir site <svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-seta-diagonal"/></svg><span class="sr">(abre em nova aba)</span></a>
+              <div class="projeto__acoes">
+                <button class="botao botao--vidro botao--p" type="button" data-interagir aria-pressed="false" hidden>Interagir</button>
+                <a class="link-seta" href="https://benedita-buffet.vercel.app/" target="_blank" rel="noopener">Abrir site <svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-seta-diagonal"/></svg><span class="sr">(abre em nova aba)</span></a>
+              </div>
             </div>
           </article>
 
-          <article class="projeto" data-projeto="paris6">
+          <article class="projeto" data-projeto="paris6" data-url="https://paris6cequeiracesar.vercel.app/">
             <div class="janela">
-              <div class="janela__barra"><span class="janela__luzes" aria-hidden="true"><i></i><i></i><i></i></span><span class="janela__url">paris6cequeiracesar.vercel.app</span></div>
-              <div class="janela__tela"><p class="em-breve">Site ao vivo entra na Etapa 4</p></div>
+              <div class="janela__barra">
+                <span class="janela__luzes" aria-hidden="true"><i></i><i></i><i></i></span>
+                <span class="janela__url">paris6cequeiracesar.vercel.app</span>
+                <button class="janela__sair" type="button" data-sair hidden>Sair do site</button>
+              </div>
+              <div class="janela__tela" data-tela><p class="tela__status" data-status-tela>Site ao vivo: abra pelo link abaixo</p></div>
             </div>
             <div class="projeto__info">
               <div>
                 <p class="etiqueta" data-status>[ Status pendente ]</p>
                 <h3 class="projeto__nome">Paris 6</h3>
               </div>
-              <a class="link-seta" href="https://paris6cequeiracesar.vercel.app/" target="_blank" rel="noopener">Abrir site <svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-seta-diagonal"/></svg><span class="sr">(abre em nova aba)</span></a>
+              <div class="projeto__acoes">
+                <button class="botao botao--vidro botao--p" type="button" data-interagir aria-pressed="false" hidden>Interagir</button>
+                <a class="link-seta" href="https://paris6cequeiracesar.vercel.app/" target="_blank" rel="noopener">Abrir site <svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-seta-diagonal"/></svg><span class="sr">(abre em nova aba)</span></a>
+              </div>
             </div>
           </article>
 
-          <article class="projeto" data-projeto="inovatech">
+          <article class="projeto" data-projeto="inovatech" data-url="https://inovatech-tcc.vercel.app/">
             <div class="janela">
-              <div class="janela__barra"><span class="janela__luzes" aria-hidden="true"><i></i><i></i><i></i></span><span class="janela__url">inovatech-tcc.vercel.app</span></div>
-              <div class="janela__tela"><p class="em-breve">Site ao vivo entra na Etapa 4</p></div>
+              <div class="janela__barra">
+                <span class="janela__luzes" aria-hidden="true"><i></i><i></i><i></i></span>
+                <span class="janela__url">inovatech-tcc.vercel.app</span>
+                <button class="janela__sair" type="button" data-sair hidden>Sair do site</button>
+              </div>
+              <div class="janela__tela" data-tela><p class="tela__status" data-status-tela>Site ao vivo: abra pelo link abaixo</p></div>
             </div>
             <div class="projeto__info">
               <div>
                 <p class="etiqueta" data-status>[ Projeto acadêmico ]</p>
                 <h3 class="projeto__nome">InovaTech TCC</h3>
               </div>
-              <a class="link-seta" href="https://inovatech-tcc.vercel.app/" target="_blank" rel="noopener">Abrir site <svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-seta-diagonal"/></svg><span class="sr">(abre em nova aba)</span></a>
+              <div class="projeto__acoes">
+                <button class="botao botao--vidro botao--p" type="button" data-interagir aria-pressed="false" hidden>Interagir</button>
+                <a class="link-seta" href="https://inovatech-tcc.vercel.app/" target="_blank" rel="noopener">Abrir site <svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-seta-diagonal"/></svg><span class="sr">(abre em nova aba)</span></a>
+              </div>
             </div>
           </article>
         </div>
@@ -266,6 +296,16 @@
       <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-whatsapp"/></svg>
     </a>
   </nav>
+
+  <!-- ===== TELA CHEIA (celular: "Interagir" abre o site aqui, em tamanho real) ===== -->
+  <dialog class="tela-cheia" data-tela-cheia aria-labelledby="tela-cheia-titulo">
+    <div class="tela-cheia__barra">
+      <p id="tela-cheia-titulo" class="tela-cheia__titulo" data-tela-cheia-titulo></p>
+      <a class="link-seta" href="#projetos" target="_blank" rel="noopener" data-tela-cheia-link>Abrir site <svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-seta-diagonal"/></svg><span class="sr">(abre em nova aba)</span></a>
+      <button class="botao botao--vidro botao--p" type="button" data-fechar>Fechar</button>
+    </div>
+    <div class="tela-cheia__corpo" data-tela-cheia-corpo></div>
+  </dialog>
 
   <!-- ===== ÍCONES (Lucide, licença ISC; WhatsApp e Instagram: Simple Icons, CC0) ===== -->
   <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">

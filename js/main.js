@@ -165,7 +165,251 @@
     aoRolar();
   }
 
-  /* ---------- 4. Animações (GSAP + ScrollTrigger, carregados da CDN) ---------- */
+  /* ---------- 4. Portfólio ao vivo (iframes) ---------- */
+  // Cada card carrega o site de verdade quando chega perto da tela e o desliga
+  // pouco depois de sair (com folga, para não recarregar a cada rolagem pequena).
+  const MAX_VIVOS = 2;              // sites ligados ao mesmo tempo, no máximo
+  const ESPERA_DESLIGAR = 1500;     // ms fora da área antes de desligar
+  const MOSTRAR_EM = 4000;          // ms: mostra o site mesmo sem o aviso de "carregou"
+  const LIMITE_LENTO = 12000;       // ms até avisar que o site está demorando
+  const SANDBOX = 'allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox';
+
+  function iniciarPortfolio() {
+    const cards = $$('[data-projeto][data-url]');
+    if (!cards.length) return;
+    const celular = matchMedia('(max-width: 767px)');
+    // Economia de dados ligada no celular: nada carrega sozinho.
+    const economia = Boolean(navigator.connection && navigator.connection.saveData);
+    const base = () => (celular.matches ? { w: 390, h: 844 } : { w: 1440, h: 900 });
+
+    const estado = new Map(cards.map((card) => [card, {
+      tela: card.querySelector('[data-tela]'),
+      status: card.querySelector('[data-status-tela]'),
+      botao: card.querySelector('[data-interagir]'),
+      sair: card.querySelector('[data-sair]'),
+      nome: card.querySelector('.projeto__nome').textContent.trim(),
+      url: card.dataset.url,
+      liberado: !economia,
+      iframe: null,
+      timerDesligar: 0,
+      timerLento: 0,
+    }]));
+    const interagindo = (card) => card.classList.contains('interagindo');
+    const vivos = () => cards.filter((c) => estado.get(c).iframe);
+
+    function novoIframe(url, titulo) {
+      const f = document.createElement('iframe');
+      f.src = url;
+      f.title = titulo;
+      f.referrerPolicy = 'strict-origin-when-cross-origin';
+      f.setAttribute('sandbox', SANDBOX);
+      return f;
+    }
+
+    function emEspera(card) {
+      const e = estado.get(card);
+      e.tela.dataset.estado = 'espera';
+      if (e.liberado) {
+        e.status.textContent = 'Site ao vivo';
+        return;
+      }
+      const botao = document.createElement('button');
+      botao.type = 'button';
+      botao.textContent = 'Carregar ao vivo';
+      botao.addEventListener('click', () => { e.liberado = true; revisar(); });
+      e.status.replaceChildren(botao);
+    }
+
+    function ajustarEscala(card) {
+      const e = estado.get(card);
+      e.tela.style.setProperty('--escala', (e.tela.clientWidth / base().w).toFixed(4));
+    }
+
+    function ligar(card) {
+      const e = estado.get(card);
+      if (e.iframe) return;
+      const f = novoIframe(e.url, 'Site ' + e.nome + ' funcionando ao vivo');
+      f.width = base().w;
+      f.height = base().h;
+      f.tabIndex = interagindo(card) ? 0 : -1;
+      let carregou = false;
+      f.addEventListener('load', () => {
+        carregou = true;
+        clearTimeout(e.timerLento);
+        delete e.tela.dataset.lento;
+        e.tela.dataset.estado = 'pronto';
+      });
+      e.tela.dataset.estado = 'carregando';
+      e.status.textContent = 'Carregando o site ao vivo…';
+      // Site pesado: mostra o que já foi desenhado depois de MOSTRAR_EM e, se o
+      // "carregou" não vier, avisa no rodapé da moldura (sem esconder o site).
+      e.timerLento = setTimeout(() => {
+        if (e.tela.dataset.estado === 'carregando') e.tela.dataset.estado = 'pronto';
+        e.timerLento = setTimeout(() => {
+          if (carregou) return;
+          e.status.textContent = 'O site está demorando para responder. Use “Abrir site”.';
+          e.tela.dataset.lento = '';
+        }, LIMITE_LENTO - MOSTRAR_EM);
+      }, MOSTRAR_EM);
+      e.iframe = f;
+      ajustarEscala(card);
+      e.tela.appendChild(f);
+    }
+
+    function desligar(card) {
+      const e = estado.get(card);
+      clearTimeout(e.timerDesligar);
+      clearTimeout(e.timerLento);
+      e.timerDesligar = 0;
+      if (!e.iframe) return;
+      sairDoSite(card);
+      e.iframe.remove();
+      e.iframe = null;
+      delete e.tela.dataset.lento;
+      emEspera(card);
+    }
+
+    function distancia(card) {
+      const r = card.getBoundingClientRect();
+      return Math.abs(r.top + r.height / 2 - window.innerHeight / 2);
+    }
+
+    // "Perto" = até meia tela acima ou abaixo da área visível.
+    function perto(card) {
+      const r = card.getBoundingClientRect();
+      const folga = window.innerHeight / 2;
+      return r.bottom > -folga && r.top < window.innerHeight + folga;
+    }
+
+    // Escolhe quais cards ficam ligados: o que está em "Interagir" primeiro,
+    // depois os mais perto do centro da tela.
+    function revisar() {
+      const escolhidos = cards
+        .filter((c) => estado.get(c).liberado && (perto(c) || interagindo(c)))
+        .sort((a, b) => (interagindo(b) - interagindo(a)) || distancia(a) - distancia(b))
+        .slice(0, MAX_VIVOS);
+
+      cards.forEach((c) => {
+        const e = estado.get(c);
+        if (interagindo(c)) {
+          const r = c.getBoundingClientRect();
+          if (r.bottom < 0 || r.top > window.innerHeight) sairDoSite(c); // saiu da tela
+        }
+        if (escolhidos.includes(c) || !e.iframe || e.timerDesligar) return;
+        e.timerDesligar = setTimeout(() => desligar(c), ESPERA_DESLIGAR);
+      });
+
+      escolhidos.forEach((c) => {
+        const e = estado.get(c);
+        clearTimeout(e.timerDesligar);
+        e.timerDesligar = 0;
+        if (e.iframe) return;
+        // Vaga ocupada por um card que já vai sair? Desliga agora, para nunca passar de MAX_VIVOS.
+        const sobrando = vivos().filter((v) => !escolhidos.includes(v));
+        while (vivos().length >= MAX_VIVOS && sobrando.length) desligar(sobrando.pop());
+        ligar(c);
+      });
+    }
+
+    let pedido = 0;
+    const agendar = () => {
+      cancelAnimationFrame(pedido);
+      pedido = requestAnimationFrame(revisar);
+    };
+
+    /* "Interagir": no computador, navega dentro do card; no celular, abre em tela cheia. */
+    function entrarNoSite(card) {
+      const e = estado.get(card);
+      if (celular.matches) {
+        abrirTelaCheia(e);
+        return;
+      }
+      cards.forEach((c) => c !== card && sairDoSite(c));
+      e.liberado = true;
+      card.classList.add('interagindo');
+      e.botao.setAttribute('aria-pressed', 'true');
+      e.botao.textContent = 'Parar de interagir';
+      e.sair.hidden = false;
+      revisar();
+      if (e.iframe) {
+        e.iframe.tabIndex = 0;
+        e.iframe.focus();
+      }
+    }
+
+    function sairDoSite(card) {
+      if (!interagindo(card)) return;
+      const e = estado.get(card);
+      const focoDentro = document.activeElement === e.iframe;
+      card.classList.remove('interagindo');
+      e.botao.setAttribute('aria-pressed', 'false');
+      e.botao.textContent = 'Interagir';
+      e.sair.hidden = true;
+      if (e.iframe) e.iframe.tabIndex = -1;
+      if (focoDentro) e.botao.focus();
+    }
+
+    const dialogo = document.querySelector('[data-tela-cheia]');
+    const corpo = dialogo && dialogo.querySelector('[data-tela-cheia-corpo]');
+    function abrirTelaCheia(e) {
+      if (!dialogo || typeof dialogo.showModal !== 'function') {
+        window.open(e.url, '_blank', 'noopener');
+        return;
+      }
+      dialogo.querySelector('[data-tela-cheia-titulo]').textContent = e.nome;
+      dialogo.querySelector('[data-tela-cheia-link]').href = e.url;
+      corpo.replaceChildren(novoIframe(e.url, 'Site ' + e.nome + ' em tela cheia'));
+      dialogo.showModal();
+    }
+    if (dialogo) {
+      dialogo.querySelector('[data-fechar]').addEventListener('click', () => dialogo.close());
+      dialogo.addEventListener('close', () => corpo.replaceChildren()); // desliga o site
+    }
+
+    cards.forEach((card) => {
+      const e = estado.get(card);
+      e.botao.addEventListener('click', () => (interagindo(card) ? sairDoSite(card) : entrarNoSite(card)));
+      e.sair.addEventListener('click', () => {
+        sairDoSite(card);
+        e.botao.focus();
+      });
+    });
+    document.addEventListener('keydown', (ev) => {
+      if (ev.key !== 'Escape') return;
+      const ativo = cards.find(interagindo);
+      if (ativo) {
+        sairDoSite(ativo);
+        estado.get(ativo).botao.focus();
+      }
+    });
+
+    // Troca computador ↔ celular: desliga tudo e recomeça com o tamanho certo.
+    celular.addEventListener('change', () => {
+      cards.forEach(desligar);
+      if (dialogo && dialogo.open) dialogo.close();
+      cards.forEach(ajustarEscala);
+      revisar();
+    });
+
+    // Só começa depois que a página terminou de carregar (não disputa com o hero).
+    // Com 4 cards, medir a posição deles a cada rolagem custa quase nada.
+    const comecar = () => setTimeout(() => {
+      cards.forEach((card) => {
+        emEspera(card);
+        estado.get(card).botao.hidden = false;
+      });
+      window.addEventListener('scroll', agendar, { passive: true });
+      window.addEventListener('resize', () => {
+        cards.forEach(ajustarEscala);
+        agendar();
+      });
+      agendar();
+    }, 600);
+    if (document.readyState === 'complete') comecar();
+    else window.addEventListener('load', comecar, { once: true });
+  }
+
+  /* ---------- 5. Animações (GSAP + ScrollTrigger, carregados da CDN) ---------- */
   const GSAP = 'https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/';
 
   function carregarScript(src) {
@@ -295,7 +539,7 @@
     });
   }
 
-  /* ---------- 5. Modo de teste (?teste): medidas para os testes automáticos ---------- */
+  /* ---------- 6. Modo de teste (?teste): medidas para os testes automáticos ---------- */
   function modoTeste() {
     if (!TESTE) return;
     const medir = () => {
@@ -334,6 +578,14 @@
           const ra = a.getBoundingClientRect();
           return { dx: Math.round(rm.left - ra.left), dw: Math.round(rm.width - ra.width) };
         }).filter(Boolean),
+        // [projeto, estado da tela, tem iframe?, escala, recebe cliques?]
+        portfolio: $$('[data-projeto]').map((c) => {
+          const t = c.querySelector('[data-tela]');
+          const f = t && t.querySelector('iframe');
+          return [c.dataset.projeto, t ? t.dataset.estado || '-' : '-', Boolean(f), t ? t.style.getPropertyValue('--escala') : '', f ? getComputedStyle(f).pointerEvents : ''];
+        }),
+        sitesLigados: $$('[data-tela] iframe').length,
+        telaCheiaAberta: Boolean(document.querySelector('[data-tela-cheia][open]')),
         animacao: {
           gsap: Boolean(window.gsap),
           erro: window.__erroAnimacao || null,
@@ -354,6 +606,7 @@
       saida.id = 'resultado-teste';
       saida.textContent = JSON.stringify(resultado);
       document.body.appendChild(saida);
+      console.log('RESULTADO-TESTE ' + saida.textContent); // lido do log do Chrome
     };
     // Pula direto para a âncora (sem rolagem suave) e sem a transição do marcador:
     // o Chrome headless às vezes não avança transições, e o teste mede o estado final.
@@ -361,8 +614,12 @@
     const semTransicao = document.createElement('style');
     semTransicao.textContent = '.marcador{transition:none!important}';
     document.head.appendChild(semTransicao);
-    // Espera a abertura (~2 s), rola até a âncora ou até ?rolar=N px e mede.
-    const rolar = Number(new URLSearchParams(location.search).get('rolar'));
+    // Espera a abertura (~2 s), rola até a âncora ou até ?rolar=N px, opcionalmente
+    // clica em "Interagir" (?interagir=projeto) e mede depois de ?esperar=N ms.
+    const parametros = new URLSearchParams(location.search);
+    const rolar = Number(parametros.get('rolar'));
+    const clicar = parametros.get('interagir');
+    const esperar = Number(parametros.get('esperar')) || 1500;
     (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => setTimeout(() => {
       const alvo = location.hash && document.querySelector(location.hash);
       if (alvo) alvo.scrollIntoView();
@@ -370,13 +627,15 @@
       // O headless não dispara "scroll" sozinho (sem quadros de desenho).
       window.dispatchEvent(new Event('scroll'));
       if (window.ScrollTrigger) ScrollTrigger.update();
-      setTimeout(medir, 1500); // scrub (0,8 s) e marcador assentarem
+      if (clicar) setTimeout(() => document.querySelector('[data-projeto="' + clicar + '"] [data-interagir]').click(), 300);
+      setTimeout(medir, esperar); // scrub, marcador e sites ao vivo assentarem
     }, 2200));
   }
 
   aplicarConfig();
   painelPendencias();
   iniciarMenu();
+  iniciarPortfolio();
   iniciarAnimacoes();
   modoTeste();
 })();

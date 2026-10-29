@@ -572,17 +572,100 @@ h1, h2, h3 {
   font-size: 0.75rem;
   color: rgba(255, 255, 255, 0.55);
 }
+/* Botão "Sair do site" na barra, visível só enquanto a pessoa interage */
+.janela__sair {
+  margin-left: auto;
+  min-height: 32px;
+  padding: 0 0.85rem;
+  border: 0;
+  border-radius: 999px;
+  background: var(--laranja);
+  color: #1a0d03;
+  font: 600 0.8125rem/1 var(--fonte-texto);
+  cursor: pointer;
+}
+
+/* Tela: o site ao vivo é desenhado no tamanho real (1440 × 900 no computador,
+   390 × 844 no celular) e reduzido com --escala, calculada pelo main.js. */
 .janela__tela {
+  --escala: 1;
+  position: relative;
   display: grid;
   place-items: center;
   aspect-ratio: 16 / 10;
-  padding: 1.5rem;
+  overflow: hidden;
   background:
     radial-gradient(60% 80% at 15% 100%, rgba(249, 109, 20, 0.12), transparent 70%),
     radial-gradient(60% 80% at 90% 0%, rgba(12, 8, 251, 0.14), transparent 70%),
     var(--bg-2);
 }
-.janela__tela .em-breve { border-style: dashed; }
+.janela__tela iframe {
+  position: absolute;
+  top: 0; left: 0;
+  width: 1440px;
+  height: 900px;
+  max-width: none;
+  border: 0;
+  transform: scale(var(--escala));
+  transform-origin: 0 0;
+  pointer-events: none; /* não "rouba" a rolagem da página */
+  opacity: 0;
+  transition: opacity 0.5s var(--ease);
+}
+.janela__tela[data-estado="pronto"] iframe { opacity: 1; }
+.projeto.interagindo .janela__tela iframe { pointer-events: auto; }
+
+.tela__status {
+  position: relative;
+  z-index: 1;
+  max-width: 80%;
+  font-size: 0.875rem;
+  color: var(--texto-2);
+  text-align: center;
+}
+.tela__status button {
+  min-height: 44px;
+  padding: 0 1.1rem;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--texto);
+  font: 600 0.875rem/1 var(--fonte-texto);
+  cursor: pointer;
+}
+.janela__tela[data-estado="pronto"]:not([data-lento]) .tela__status { display: none; }
+/* Site demorando: aviso pequeno no rodapé da moldura, por cima do site */
+.janela__tela[data-lento] .tela__status {
+  position: absolute;
+  left: 50%; bottom: 12px;
+  z-index: 2;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(13, 14, 19, 0.88);
+  width: max-content;
+  max-width: 90%;
+  font-size: 0.75rem;
+  color: var(--texto);
+  transform: translateX(-50%);
+}
+
+/* Brilho que atravessa a moldura enquanto o site carrega (não é um print) */
+.janela__tela[data-estado="espera"]::before,
+.janela__tela[data-estado="carregando"]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, 0.06) 50%, transparent 70%);
+  background-size: 220% 100%;
+  animation: brilho-carregando 1.6s linear infinite;
+}
+@keyframes brilho-carregando {
+  from { background-position: 120% 0; }
+  to { background-position: -120% 0; }
+}
+
+/* Interagindo: contorno laranja e o botão Sair aparece */
+.projeto.interagindo .janela { box-shadow: 0 0 0 2px var(--laranja), 0 30px 60px -30px rgba(0, 0, 0, 0.8); }
 
 .projeto__info {
   display: flex;
@@ -593,6 +676,33 @@ h1, h2, h3 {
 }
 .projeto__info .etiqueta { margin-bottom: 0.35rem; }
 .projeto__nome { font-size: var(--fs-h3); letter-spacing: -0.02em; line-height: 1.2; }
+.projeto__acoes { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+.botao[aria-pressed="true"] { background: rgba(249, 109, 20, 0.16); box-shadow: inset 0 0 0 1px rgba(249, 109, 20, 0.6); }
+
+/* Tela cheia (celular): o site em tamanho real, com Fechar sempre à mão */
+.tela-cheia {
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: var(--bg);
+  color: var(--texto);
+}
+.tela-cheia[open] { display: flex; flex-direction: column; }
+.tela-cheia::backdrop { background: rgba(0, 0, 0, 0.7); }
+.tela-cheia__barra {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: calc(8px + env(safe-area-inset-top)) 12px 8px 16px;
+  border-bottom: 1px solid var(--linha);
+}
+.tela-cheia__titulo { flex: 1; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tela-cheia__corpo { position: relative; flex: 1; }
+.tela-cheia__corpo iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 
 /* ---------- 11. Serviços ---------- */
 .servicos {
@@ -826,8 +936,31 @@ h1, h2, h3 {
     );
   }
 
-  .projetos { grid-template-columns: 1fr; }
-  .projeto__info { flex-direction: column; align-items: flex-start; gap: 0.25rem; }
+  /* Projetos: moldura de celular com a versão de celular de cada site (390 × 844) */
+  .projetos { grid-template-columns: 1fr; row-gap: 3.5rem; }
+  .projeto { display: grid; justify-items: center; }
+  .janela {
+    position: relative;
+    width: min(70vw, 270px);
+    padding: 9px;
+    border-radius: 44px;
+    background: #08090c;
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.14), inset 0 0 0 1px rgba(255, 255, 255, 0.05), 0 30px 60px -30px #000;
+  }
+  .janela::after { /* ilha do celular */
+    content: "";
+    position: absolute;
+    top: 17px; left: 50%;
+    z-index: 2;
+    width: 30%; height: 20px;
+    border-radius: 999px;
+    background: #000;
+    transform: translateX(-50%);
+  }
+  .janela__barra { display: none; }
+  .janela__tela { aspect-ratio: 390 / 844; border-radius: 35px; }
+  .janela__tela iframe { width: 390px; height: 844px; }
+  .projeto__info { width: 100%; flex-direction: column; align-items: flex-start; gap: 0.75rem; }
 
   .servicos { grid-template-columns: 1fr; row-gap: 1.75rem; }
   .servico { gap: 1rem; }
@@ -838,6 +971,7 @@ h1, h2, h3 {
 /* ---------- 16. Movimento reduzido e navegadores sem desfoque ---------- */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
+  .janela__tela::before { animation: none !important; }
   *, *::before, *::after {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
