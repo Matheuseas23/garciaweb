@@ -360,15 +360,17 @@ h1, h2, h3 {
 
 .hero__fundo { position: absolute; inset: 0; z-index: -1; }
 
-/* Luz: laranja embaixo à esquerda, azul à direita (o gradiente oficial em forma de luz) */
+/* Luz: laranja embaixo à esquerda, azul à direita (o gradiente oficial em forma de luz).
+   A caixa tem o dobro do tamanho do hero (inset -50%) para os brilhos sumirem
+   antes da borda: assim, quando ela encolhe no Ato 2, não aparecem cantos retos. */
 .hero__luz {
   position: absolute;
-  inset: 0;
+  inset: -50%;
   background:
-    radial-gradient(42% 48% at 20% 92%, rgba(249, 109, 20, 0.62), transparent 72%),
-    radial-gradient(30% 36% at 34% 104%, rgba(255, 170, 110, 0.35), transparent 70%),
-    radial-gradient(34% 58% at 84% 52%, rgba(12, 8, 251, 0.58), transparent 72%),
-    radial-gradient(18% 30% at 76% 50%, rgba(170, 185, 255, 0.16), transparent 70%);
+    radial-gradient(21% 24% at 35% 71%, rgba(249, 109, 20, 0.62), transparent 72%),
+    radial-gradient(15% 18% at 42% 77%, rgba(255, 170, 110, 0.35), transparent 70%),
+    radial-gradient(17% 29% at 67% 51%, rgba(12, 8, 251, 0.58), transparent 72%),
+    radial-gradient(9% 15% at 63% 50%, rgba(170, 185, 255, 0.16), transparent 70%);
 }
 
 /* Vidro canelado: faixas verticais com borda clara e sombra, sobre a luz */
@@ -426,8 +428,15 @@ h1, h2, h3 {
   line-height: 1.02;
   letter-spacing: -0.035em;
 }
-/* Cada linha um tom mais apagada (como na referência) */
-.hero__linha { display: block; }
+/* Cada linha um tom mais apagada (como na referência).
+   A linha é uma máscara: o texto de dentro sobe de baixo dela na abertura. */
+.hero__linha {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.12em; /* espaço para o "g" e o "ç" não serem cortados */
+  margin-bottom: -0.12em;
+}
+.hero__linha > span { display: block; }
 .hero__linha:nth-child(2) { color: rgba(255, 255, 255, 0.8); }
 .hero__linha:nth-child(n + 3) { color: rgba(255, 255, 255, 0.62); }
 
@@ -454,6 +463,55 @@ h1, h2, h3 {
   text-decoration: none;
 }
 .hero__dica .icone { width: 1rem; height: 1rem; }
+
+/* Assinatura: logo + halo laranja → azul.
+   Padrão (celular, movimento reduzido, sem JS): bloco parado abaixo do hero. */
+.abertura { position: relative; }
+.assinatura {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  place-items: center;
+  min-height: 70svh;
+  padding: 4rem var(--margem);
+  overflow: hidden;
+}
+.assinatura__halo {
+  position: absolute;
+  z-index: -1;
+  width: min(92vw, 760px);
+  aspect-ratio: 1;
+  /* Raios fixos (34%): os brilhos somem antes da borda da caixa. */
+  background:
+    radial-gradient(34% 34% at 36% 50%, rgba(249, 109, 20, 0.5), transparent),
+    radial-gradient(34% 34% at 64% 50%, rgba(12, 8, 251, 0.58), transparent);
+}
+.assinatura__logo { display: grid; place-items: center; }
+.assinatura__logo img { height: clamp(96px, 15vw, 210px); width: auto; }
+[data-logo] { display: inline-flex; align-items: center; justify-content: center; }
+.logo-pendente--grande {
+  height: clamp(96px, 11vw, 160px);
+  padding: 0 clamp(2.5rem, 7vw, 5.5rem);
+  border-radius: 16px;
+  font-size: 0.875rem;
+}
+
+/* Computador com animação (classe "cinema", posta pelo main.js):
+   a assinatura fica por cima do hero, que é preso na tela durante a rolagem. */
+.cinema .assinatura {
+  position: absolute;
+  inset: 0;
+  min-height: 0;
+  padding: 0;
+  pointer-events: none;
+}
+
+/* Estado inicial da abertura (só enquanto a classe "intro" existir). */
+.intro .hero__fundo,
+.intro .hero .etiqueta,
+.intro .hero__sub { opacity: 0; }
+.intro .topo { opacity: 0; transform: translateY(-16px); }
+.intro .hero__linha > span { transform: translateY(110%); }
 
 /* ---------- 9. Seções ---------- */
 .secao {
@@ -753,8 +811,8 @@ h1, h2, h3 {
   .hero__dica { display: none; }
   .hero__luz {
     background:
-      radial-gradient(70% 40% at 15% 100%, rgba(249, 109, 20, 0.6), transparent 72%),
-      radial-gradient(60% 40% at 95% 30%, rgba(12, 8, 251, 0.6), transparent 72%);
+      radial-gradient(35% 20% at 32.5% 75%, rgba(249, 109, 20, 0.6), transparent 72%),
+      radial-gradient(30% 20% at 72.5% 40%, rgba(12, 8, 251, 0.6), transparent 72%);
   }
   .hero__canelado {
     background: repeating-linear-gradient(

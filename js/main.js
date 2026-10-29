@@ -8,6 +8,14 @@
 
   const cfg = window.GARCIA || {};
   const raiz = document.documentElement;
+  const TESTE = /[?&]teste\b/.test(location.search);
+
+  // No teste automático (Chrome headless dentro de iframe) o requestAnimationFrame
+  // não dispara; com setTimeout as animações avançam lá. Nunca afeta o visitante.
+  if (TESTE) {
+    window.requestAnimationFrame = (cb) => setTimeout(() => cb(performance.now()), 16);
+    window.cancelAnimationFrame = (id) => clearTimeout(id);
+  }
   const $$ = (seletor, base = document) => Array.from(base.querySelectorAll(seletor));
 
   /* ---------- 1. Textos e dados do config.js ---------- */
@@ -15,10 +23,12 @@
     const titulo = document.querySelector('[data-config="heroFrase"]');
     if (titulo && Array.isArray(cfg.heroFrase) && cfg.heroFrase.length) {
       titulo.replaceChildren(...cfg.heroFrase.map((linha) => {
-        const span = document.createElement('span');
-        span.className = 'hero__linha';
-        span.textContent = linha;
-        return span;
+        const mascara = document.createElement('span');
+        const texto = document.createElement('span');
+        mascara.className = 'hero__linha';
+        texto.textContent = linha;
+        mascara.appendChild(texto);
+        return mascara;
       }));
     }
 
@@ -155,15 +165,146 @@
     aoRolar();
   }
 
-  /* ---------- 4. Modo de teste (?teste): medidas para os testes automáticos ---------- */
+  /* ---------- 4. Animações (GSAP + ScrollTrigger, carregados da CDN) ---------- */
+  const GSAP = 'https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/';
+
+  function carregarScript(src) {
+    return new Promise((ok, falha) => {
+      const s = document.createElement('script');
+      s.src = src;
+      s.onload = ok;
+      s.onerror = falha;
+      document.head.appendChild(s);
+    });
+  }
+
+  function iniciarAnimacoes() {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const bibliotecas = carregarScript(GSAP + 'gsap.min.js')
+      .then(() => carregarScript(GSAP + 'ScrollTrigger.min.js'));
+
+    // Se a CDN demorar mais de 1,5 s, a página aparece parada (sem abertura);
+    // as animações de rolagem entram quando as bibliotecas chegarem.
+    const tarde = new Promise((ok) => setTimeout(() => ok('tarde'), 1500));
+    Promise.race([bibliotecas.then(() => 'ok'), tarde]).then((r) => {
+      if (r === 'tarde') raiz.classList.remove('intro');
+    });
+
+    bibliotecas
+      .then(() => {
+        gsap.registerPlugin(ScrollTrigger);
+        if (raiz.classList.contains('intro')) abertura();
+        animacoesDeRolagem();
+        if (document.fonts) document.fonts.ready.then(() => ScrollTrigger.refresh());
+      })
+      .catch((erro) => {
+        raiz.classList.remove('intro');
+        window.__erroAnimacao = String(erro && (erro.stack || erro.message || erro.type || erro));
+      });
+  }
+
+  // Ato 1: a luz acende, o menu desce e a frase sobe linha a linha.
+  // Os botões não esperam: ficam visíveis desde o primeiro instante.
+  function abertura() {
+    window.__introIniciada = true;
+    window.__tlAbertura = gsap.timeline({
+      // clearProps: ao terminar, devolve os elementos ao CSS normal (sem estilos soltos).
+      defaults: { ease: 'expo.out', clearProps: 'transform,opacity' },
+      onComplete: () => {
+        raiz.classList.remove('intro');
+        ScrollTrigger.refresh();
+      },
+    })
+      .fromTo('.hero__fundo', { opacity: 0 }, { opacity: 1, duration: 1.6, ease: 'power2.out' }, 0)
+      .fromTo('.topo', { opacity: 0, y: -16 }, { opacity: 1, y: 0, duration: 0.8 }, 0.1)
+      .fromTo('.hero .etiqueta', { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.6 }, 0.15)
+      .fromTo('.hero__linha > span', { yPercent: 110 }, { yPercent: 0, duration: 1.1, stagger: 0.12 }, 0.2)
+      .fromTo('.hero__sub', { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.8 }, 0.55);
+  }
+
+  function animacoesDeRolagem() {
+    const mm = gsap.matchMedia();
+
+    // Computador: hero preso na tela; texto sai, luz converge em halo,
+    // a logo surge do desfoque e voa até o menu (Atos 2 e 3).
+    mm.add('(min-width: 768px) and (prefers-reduced-motion: no-preference)', () => {
+      raiz.classList.add('cinema');
+      const logoGrande = document.querySelector('.assinatura__logo');
+      const logoMenu = document.querySelector('.menu__logo [data-logo]');
+
+      // Distância e escala do centro da tela (onde a logo grande fica) até a logo do menu.
+      const voo = () => {
+        const alvo = logoMenu.getBoundingClientRect();
+        return {
+          x: alvo.left + alvo.width / 2 - window.innerWidth / 2,
+          y: alvo.top + alvo.height / 2 - window.innerHeight / 2,
+          escala: alvo.height / logoGrande.offsetHeight,
+        };
+      };
+
+      gsap.set(logoMenu, { opacity: 0 });
+      gsap.timeline({
+        defaults: { ease: 'none' },
+        scrollTrigger: {
+          trigger: '.abertura',
+          start: 'top top',
+          end: '+=120%',
+          scrub: 0.8,
+          pin: true,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+        },
+      })
+        .to('.hero__conteudo', { yPercent: -18, opacity: 0, duration: 0.35, ease: 'power1.in' }, 0)
+        .to('.hero__dica', { opacity: 0, duration: 0.15 }, 0)
+        .to('.hero__luz', { scale: 0.55, duration: 0.5 }, 0.05)
+        .to('.hero__canelado', { opacity: 0.2, duration: 0.4 }, 0.1)
+        .fromTo('.assinatura__halo', { opacity: 0, scale: 0.55 }, { opacity: 1, scale: 1, duration: 0.4, ease: 'power2.out' }, 0.2)
+        .fromTo(logoGrande, { opacity: 0, scale: 0.96, filter: 'blur(14px)' }, { opacity: 1, scale: 1, filter: 'blur(0px)', duration: 0.35, ease: 'power2.out' }, 0.3)
+        .to('.assinatura__halo', { opacity: 0, scale: 0.7, duration: 0.22 }, 0.78)
+        .to(logoGrande, {
+          x: () => voo().x,
+          y: () => voo().y,
+          scale: () => voo().escala,
+          duration: 0.2,
+          ease: 'power2.inOut',
+        }, 0.78)
+        .to(logoGrande, { opacity: 0, duration: 0.02 }, 0.98)
+        .to(logoMenu, { opacity: 1, duration: 0.02 }, 0.98);
+
+      entradaDosProjetos({ rotateX: 16, y: 90 });
+      return () => raiz.classList.remove('cinema');
+    });
+
+    // Celular: nada preso na tela; a logo aparece conforme a pessoa rola.
+    mm.add('(max-width: 767px) and (prefers-reduced-motion: no-preference)', () => {
+      const gatilho = { trigger: '.assinatura', start: 'top 90%', end: 'center 60%', scrub: 0.6 };
+      gsap.fromTo('.assinatura__halo', { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, ease: 'none', scrollTrigger: gatilho });
+      gsap.fromTo('.assinatura__logo', { opacity: 0, y: 30, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, ease: 'none', scrollTrigger: { ...gatilho, start: 'top 80%' } });
+      entradaDosProjetos({ rotateX: 0, y: 40 });
+    });
+  }
+
+  // Ato 3: as molduras dos projetos entram inclinadas (3D leve em CSS) e se endireitam.
+  function entradaDosProjetos({ rotateX, y }) {
+    gsap.utils.toArray('.janela').forEach((janela) => {
+      gsap.fromTo(janela,
+        { rotateX, y, opacity: 0.35, transformPerspective: 1400, transformOrigin: '50% 0%' },
+        { rotateX: 0, y: 0, opacity: 1, ease: 'none', scrollTrigger: { trigger: janela, start: 'top 98%', end: 'top 60%', scrub: 0.6 } });
+    });
+  }
+
+  /* ---------- 5. Modo de teste (?teste): medidas para os testes automáticos ---------- */
   function modoTeste() {
-    if (!/[?&]teste\b/.test(location.search)) return;
+    if (!TESTE) return;
     const medir = () => {
       const largura = raiz.clientWidth;
       const vazando = $$('body *')
         .filter((el) => {
           const r = el.getBoundingClientRect();
-          return r.width > 0 && (r.right > largura + 1 || r.left < -1) && !el.closest('.sr, .pular, svg[width="0"]');
+          // .hero__fundo é recortado pelo hero (overflow: hidden), então não conta.
+          return r.width > 0 && (r.right > largura + 1 || r.left < -1) && !el.closest('.sr, .pular, svg[width="0"], .hero__fundo');
         })
         .slice(0, 8)
         .map((el) => el.tagName.toLowerCase() + '.' + String(el.className.baseVal ?? el.className).split(' ')[0]);
@@ -193,6 +334,19 @@
           const ra = a.getBoundingClientRect();
           return { dx: Math.round(rm.left - ra.left), dw: Math.round(rm.width - ra.width) };
         }).filter(Boolean),
+        animacao: {
+          gsap: Boolean(window.gsap),
+          erro: window.__erroAnimacao || null,
+          gatilhos: window.ScrollTrigger ? ScrollTrigger.getAll().map((t) => [Math.round(t.start), Math.round(t.end), +t.progress.toFixed(2)]) : 0,
+          abertura: window.__tlAbertura ? window.__tlAbertura.progress() : 'nao criada',
+          intro: raiz.classList.contains('intro'),
+          cinema: raiz.classList.contains('cinema'),
+          rolagem: Math.round(window.scrollY),
+          textoHero: getComputedStyle(document.querySelector('.hero__conteudo')).opacity,
+          linha1: getComputedStyle(document.querySelector('.hero__linha > span')).transform,
+          logoGrande: getComputedStyle(document.querySelector('.assinatura__logo')).opacity,
+          logoMenu: getComputedStyle(document.querySelector('.menu__logo [data-logo]')).opacity,
+        },
         fontes: document.fonts ? [...document.fonts].filter((f) => f.status === 'loaded').map((f) => f.family + ' ' + f.weight) : [],
       };
       const saida = document.createElement('script');
@@ -207,15 +361,22 @@
     const semTransicao = document.createElement('style');
     semTransicao.textContent = '.marcador{transition:none!important}';
     document.head.appendChild(semTransicao);
-    (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => {
+    // Espera a abertura (~2 s), rola até a âncora ou até ?rolar=N px e mede.
+    const rolar = Number(new URLSearchParams(location.search).get('rolar'));
+    (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => setTimeout(() => {
       const alvo = location.hash && document.querySelector(location.hash);
       if (alvo) alvo.scrollIntoView();
-      setTimeout(medir, 900); // depois da transição do marcador (450 ms)
-    });
+      else if (rolar) window.scrollTo(0, rolar);
+      // O headless não dispara "scroll" sozinho (sem quadros de desenho).
+      window.dispatchEvent(new Event('scroll'));
+      if (window.ScrollTrigger) ScrollTrigger.update();
+      setTimeout(medir, 1500); // scrub (0,8 s) e marcador assentarem
+    }, 2200));
   }
 
   aplicarConfig();
   painelPendencias();
   iniciarMenu();
+  iniciarAnimacoes();
   modoTeste();
 })();

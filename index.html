@@ -6,10 +6,23 @@
   <title>Garcia Web — Design e Desenvolvimento Web</title>
   <meta name="description" content="Garcia Web: sites personalizados para negócios de São Paulo, do primeiro rascunho à publicação.">
   <meta name="theme-color" content="#0D0E13">
-  <script>document.documentElement.classList.replace('sem-js', 'com-js');</script>
+  <script>
+    // Prepara a abertura animada (frase subindo linha a linha). Se ela não
+    // começar em 2,5 s (internet lenta, CDN fora do ar), mostra tudo parado.
+    (function (h) {
+      h.classList.replace('sem-js', 'com-js');
+      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        h.classList.add('intro');
+        setTimeout(function () { if (!window.__introIniciada) h.classList.remove('intro'); }, 2500);
+      }
+    })(document.documentElement);
+  </script>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net">
+  <link rel="preload" as="script" href="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js">
+  <link rel="preload" as="script" href="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
   <link rel="stylesheet" href="css/estilos.css">
 
@@ -44,7 +57,8 @@
 
   <main id="conteudo">
     <!-- ===== HERO ===== -->
-    <section id="inicio" class="hero" aria-labelledby="hero-titulo">
+    <section id="inicio" class="abertura" aria-labelledby="hero-titulo">
+      <div class="hero"><!-- Ato 1: frase, subtítulo e botões -->
       <div class="hero__fundo" aria-hidden="true">
         <div class="hero__luz"></div>
         <div class="hero__canelado"></div>
@@ -52,12 +66,12 @@
       </div>
 
       <div class="hero__conteudo container">
-        <p class="etiqueta">[ Design e desenvolvimento web ]</p>
+        <p class="etiqueta">[ Garcia Web · Design e desenvolvimento web ]</p>
         <!-- O texto real vem de js/config.js (heroFrase). Este é só o reserva caso o JS falhe. -->
         <h1 id="hero-titulo" class="hero__titulo" data-config="heroFrase">
-          <span class="hero__linha">Seu negócio</span>
-          <span class="hero__linha">merece um site</span>
-          <span class="hero__linha">à altura.</span>
+          <span class="hero__linha"><span>Seu negócio</span></span>
+          <span class="hero__linha"><span>merece um site</span></span>
+          <span class="hero__linha"><span>à altura.</span></span>
         </h1>
         <div class="hero__rodape">
           <p class="hero__sub" data-config="heroSubtitulo">Sites personalizados para negócios de São Paulo, do primeiro rascunho à publicação, com contato direto comigo.</p>
@@ -75,6 +89,15 @@
         <svg class="icone" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-seta-baixo"/></svg>
         Role para ver os projetos
       </a>
+      </div><!-- /hero -->
+
+      <!-- Assinatura: a logo surge do desfoque com o halo laranja → azul atrás.
+           Computador: aparece sobre o hero preso na tela e depois voa até o menu.
+           Celular / movimento reduzido / sem JS: bloco parado logo abaixo do hero. -->
+      <div class="assinatura" aria-hidden="true">
+        <div class="assinatura__halo"></div>
+        <div class="assinatura__logo"><span class="logo-pendente logo-pendente--grande" data-logo>Logo</span></div>
+      </div>
     </section>
 
     <!-- ===== PROJETOS (iframes ao vivo entram na Etapa 4) ===== -->
