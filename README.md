@@ -7,6 +7,7 @@ Dê dois cliques em `index.html` (abre no navegador) ou use a extensão Live Ser
 
 ## Onde editar
 - **`js/config.js`**: frase do início, número do WhatsApp, logo e etiqueta de cada projeto. Os itens marcados como PENDENTE aparecem no painel "Pendências" enquanto `MODO_RASCUNHO` for `true`.
+- Textos de serviços, processo e perguntas frequentes: direto no `index.html` (seções `#servicos`, `#processo` e `#duvidas`).
 - `css/estilos.css`: visual (cores e fontes ficam nos tokens do topo do arquivo).
 - `js/main.js`: comportamento (menu, configurações, portfólio ao vivo, animações).
 - Para trocar ou acrescentar um projeto do portfólio: copie um `<article class="projeto">` no `index.html` e mude `data-projeto`, `data-url`, o nome e os links; a etiqueta fica no `js/config.js`. O site precisa aceitar ser exibido dentro de outro site (sem `X-Frame-Options: SAMEORIGIN`).
@@ -19,6 +20,6 @@ Abrir com `?teste` (ex.: `index.html?teste&rolar=600`) grava medidas num `<scrip
 2. Estrutura e identidade ✅
 3. Hero e animações ✅
 4. Portfólio ao vivo (iframes) ✅
-5. Serviços, processo e dúvidas
+5. Serviços, processo e dúvidas ✅
 6. Contato e rodapé
 7. Revisão geral e publicação na Vercel

@@ -4,7 +4,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Garcia Web — Design e Desenvolvimento Web</title>
-  <meta name="description" content="Garcia Web: sites personalizados para negócios de São Paulo, do primeiro rascunho à publicação.">
+  <meta name="description" content="Garcia Web: não criamos sites, criamos presença digital. Sites personalizados para negócios de São Paulo, do primeiro rascunho à publicação.">
+
   <meta name="theme-color" content="#0D0E13">
   <script>
     // Prepara a abertura animada (frase subindo linha a linha). Se ela não
@@ -69,12 +70,11 @@
         <p class="etiqueta">[ Garcia Web · Design e desenvolvimento web ]</p>
         <!-- O texto real vem de js/config.js (heroFrase). Este é só o reserva caso o JS falhe. -->
         <h1 id="hero-titulo" class="hero__titulo" data-config="heroFrase">
-          <span class="hero__linha"><span>Seu negócio</span></span>
-          <span class="hero__linha"><span>merece um site</span></span>
-          <span class="hero__linha"><span>à altura.</span></span>
+          <span class="hero__linha hero__linha--apagado"><span>Não criamos sites.</span></span>
+          <span class="hero__linha"><span>Criamos <em class="destaque">presença digital</em>.</span></span>
         </h1>
         <div class="hero__rodape">
-          <p class="hero__sub" data-config="heroSubtitulo">Sites personalizados para negócios de São Paulo, do primeiro rascunho à publicação, com contato direto comigo.</p>
+          <p class="hero__sub" data-config="heroSubtitulo">Sites personalizados para negócios de São Paulo, do primeiro rascunho à publicação, com contato direto com quem faz o seu site.</p>
           <div class="hero__acoes">
             <a class="botao botao--principal" href="#contato" data-whatsapp>
               <span class="botao__icone" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-whatsapp"/></svg></span>
@@ -199,41 +199,150 @@
       </div>
     </section>
 
-    <!-- ===== SERVIÇOS (descrições e animação na Etapa 5) ===== -->
+    <!-- ===== SERVIÇOS ===== -->
     <section id="servicos" class="secao" aria-labelledby="servicos-titulo">
       <div class="container">
         <header class="secao__cabeca">
           <p class="etiqueta">[ Serviços ]</p>
-          <h2 id="servicos-titulo" class="secao__titulo">O que eu faço.</h2>
+          <h2 id="servicos-titulo" class="secao__titulo">O que a Garcia Web faz.</h2>
+          <p class="secao__intro">Sites feitos sob medida para o seu negócio, com o caminho até o WhatsApp sempre à mão.</p>
         </header>
         <ol class="servicos">
-          <li class="servico"><span class="servico__num">01</span><h3 class="servico__nome">Landing pages</h3></li>
-          <li class="servico"><span class="servico__num">02</span><h3 class="servico__nome">Sites institucionais</h3></li>
-          <li class="servico"><span class="servico__num">03</span><h3 class="servico__nome">Cardápios e catálogos digitais</h3></li>
-          <li class="servico"><span class="servico__num">04</span><h3 class="servico__nome">Melhorias e manutenção</h3></li>
+          <li class="servico">
+            <span class="servico__num">01</span>
+            <h3 class="servico__nome">Landing pages</h3>
+            <p class="servico__texto">Uma página focada em um produto, serviço ou campanha, que leva a pessoa direto para a conversa.</p>
+          </li>
+          <li class="servico">
+            <span class="servico__num">02</span>
+            <h3 class="servico__nome">Sites institucionais</h3>
+            <p class="servico__texto">A apresentação completa do negócio: o que vocês fazem, onde ficam e como falar com vocês.</p>
+          </li>
+          <li class="servico">
+            <span class="servico__num">03</span>
+            <h3 class="servico__nome">Cardápios e catálogos digitais</h3>
+            <p class="servico__texto">Produtos organizados por categoria, com fotos e preços, e pedido pelo WhatsApp.</p>
+          </li>
+          <li class="servico">
+            <span class="servico__num">04</span>
+            <h3 class="servico__nome">Melhorias e manutenção</h3>
+            <p class="servico__texto">Ajustes, atualizações e novas seções em sites que já estão no ar.</p>
+          </li>
+        </ol>
+        <div class="segmentos">
+          <p class="etiqueta">[ Para quem ]</p>
+          <ul class="segmentos__lista">
+            <li>Restaurantes</li>
+            <li>Hamburguerias</li>
+            <li>Pizzarias</li>
+            <li>Açaiterias</li>
+            <li>Cafeterias</li>
+            <li>Confeitarias e docerias</li>
+            <li>Buffets</li>
+            <li>Barbearias</li>
+            <li>Estúdios e profissionais</li>
+            <li>Negócios locais</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PROCESSO (a linha laranja → azul se desenha com a rolagem) ===== -->
+    <section id="processo" class="secao" aria-labelledby="processo-titulo">
+      <div class="container duas-colunas">
+        <header class="secao__cabeca duas-colunas__fixo">
+          <p class="etiqueta">[ Processo ]</p>
+          <h2 id="processo-titulo" class="secao__titulo">Como funciona.</h2>
+          <p class="secao__intro">Do primeiro contato ao site no ar, tudo combinado por escrito e com você acompanhando cada etapa.</p>
+        </header>
+        <ol class="passos" data-passos>
+          <li class="passo">
+            <span class="passo__num" aria-hidden="true">1</span>
+            <div>
+              <h3 class="passo__nome">Conversa</h3>
+              <p class="passo__texto">Você conta sobre o seu negócio e o que precisa, pelo WhatsApp.</p>
+            </div>
+          </li>
+          <li class="passo">
+            <span class="passo__num" aria-hidden="true">2</span>
+            <div>
+              <h3 class="passo__nome">Proposta</h3>
+              <p class="passo__texto">Escopo, prazo e valor por escrito, antes de qualquer pagamento.</p>
+            </div>
+          </li>
+          <li class="passo">
+            <span class="passo__num" aria-hidden="true">3</span>
+            <div>
+              <h3 class="passo__nome">Contratação</h3>
+              <p class="passo__texto">50% na contratação, para reservar o início do trabalho.</p>
+            </div>
+          </li>
+          <li class="passo">
+            <span class="passo__num" aria-hidden="true">4</span>
+            <div>
+              <h3 class="passo__nome">Criação</h3>
+              <p class="passo__texto">Design e desenvolvimento do site, com prévias para você acompanhar.</p>
+            </div>
+          </li>
+          <li class="passo">
+            <span class="passo__num" aria-hidden="true">5</span>
+            <div>
+              <h3 class="passo__nome">Revisões</h3>
+              <p class="passo__texto">Ajustes dentro do que foi combinado na proposta.</p>
+            </div>
+          </li>
+          <li class="passo">
+            <span class="passo__num" aria-hidden="true">6</span>
+            <div>
+              <h3 class="passo__nome">Publicação</h3>
+              <p class="passo__texto">Site no ar no seu domínio, com os 50% restantes na entrega.</p>
+            </div>
+          </li>
         </ol>
       </div>
     </section>
 
-    <!-- ===== PROCESSO (Etapa 5) ===== -->
-    <section id="processo" class="secao" aria-labelledby="processo-titulo">
-      <div class="container">
-        <header class="secao__cabeca">
-          <p class="etiqueta">[ Processo ]</p>
-          <h2 id="processo-titulo" class="secao__titulo">Como funciona.</h2>
-        </header>
-        <p class="em-breve">Etapas do processo e linha que se desenha com a rolagem: Etapa 5</p>
-      </div>
-    </section>
-
-    <!-- ===== DÚVIDAS (Etapa 5) ===== -->
+    <!-- ===== DÚVIDAS (abre e fecha sem JavaScript: <details>) ===== -->
     <section id="duvidas" class="secao" aria-labelledby="duvidas-titulo">
-      <div class="container">
-        <header class="secao__cabeca">
+      <div class="container duas-colunas">
+        <header class="secao__cabeca duas-colunas__fixo">
           <p class="etiqueta">[ Dúvidas ]</p>
           <h2 id="duvidas-titulo" class="secao__titulo">Perguntas frequentes.</h2>
         </header>
-        <p class="em-breve">Perguntas e respostas: Etapa 5</p>
+        <div class="perguntas">
+          <details class="pergunta" name="duvidas">
+            <summary>Quanto custa um site?</summary>
+            <div class="pergunta__resposta"><p>Depende do tamanho do site e das funções que ele precisa ter. Depois de uma conversa rápida, você recebe uma proposta por escrito com escopo, prazo e valor, para decidir com calma.</p></div>
+          </details>
+          <details class="pergunta" name="duvidas">
+            <summary>Como funciona o pagamento?</summary>
+            <div class="pergunta__resposta"><p>50% na contratação e 50% na entrega, com tudo combinado antes, por escrito.</p></div>
+          </details>
+          <details class="pergunta" name="duvidas">
+            <summary>O domínio fica no nome de quem?</summary>
+            <div class="pergunta__resposta"><p>No seu. O domínio (por exemplo, seunegocio.com.br) é registrado com os dados da sua empresa, e eu ajudo em todo o processo. O registro é pago direto por você, uma vez por ano. Assim, o endereço do site continua sendo seu, aconteça o que acontecer.</p></div>
+          </details>
+          <details class="pergunta" name="duvidas">
+            <summary>Quanto tempo leva para ficar pronto?</summary>
+            <div class="pergunta__resposta"><p>Depende do escopo. O prazo vem escrito na proposta, antes de começar.</p></div>
+          </details>
+          <details class="pergunta" name="duvidas">
+            <summary>Meu negócio já tem Instagram. Preciso de um site?</summary>
+            <div class="pergunta__resposta"><p>O Instagram é ótimo para divulgar, mas o perfil fica numa plataforma que não é sua. O site é um endereço próprio que reúne o que o cliente procura: cardápio ou serviços, fotos, localização e o botão do WhatsApp.</p></div>
+          </details>
+          <details class="pergunta" name="duvidas">
+            <summary>E depois que o site estiver no ar?</summary>
+            <div class="pergunta__resposta"><p>Ajustes, atualizações e novas seções podem ser combinados à parte, sempre que você precisar.</p></div>
+          </details>
+          <details class="pergunta" name="duvidas">
+            <summary>Com quem eu falo?</summary>
+            <div class="pergunta__resposta"><p>Comigo, Matheus, fundador da Garcia Web. Você conversa direto com quem faz o seu site, do primeiro contato à entrega.</p></div>
+          </details>
+          <details class="pergunta" name="duvidas">
+            <summary>Posso ver sites que já estão no ar?</summary>
+            <div class="pergunta__resposta"><p>Pode. Os projetos acima estão funcionando: navegue por eles, inclusive no celular.</p></div>
+          </details>
+        </div>
       </div>
     </section>
 

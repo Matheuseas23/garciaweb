@@ -22,14 +22,27 @@
   function aplicarConfig() {
     const titulo = document.querySelector('[data-config="heroFrase"]');
     if (titulo && Array.isArray(cfg.heroFrase) && cfg.heroFrase.length) {
-      titulo.replaceChildren(...cfg.heroFrase.map((linha) => {
+      const linhas = cfg.heroFrase.map((item) => {
+        const linha = typeof item === 'string' ? { texto: item } : item;
         const mascara = document.createElement('span');
         const texto = document.createElement('span');
-        mascara.className = 'hero__linha';
-        texto.textContent = linha;
+        mascara.className = 'hero__linha' + (linha.tom ? ' hero__linha--' + linha.tom : '');
+        // *entre asteriscos* = destaque em laranja
+        linha.texto.split(/(\*[^*]+\*)/).filter(Boolean).forEach((pedaco) => {
+          if (pedaco.startsWith('*') && pedaco.endsWith('*')) {
+            const destaque = document.createElement('em');
+            destaque.className = 'destaque';
+            destaque.textContent = pedaco.slice(1, -1);
+            texto.appendChild(destaque);
+          } else {
+            texto.appendChild(document.createTextNode(pedaco));
+          }
+        });
         mascara.appendChild(texto);
         return mascara;
-      }));
+      });
+      // Espaço entre as linhas, para leitores de tela lerem "sites. Criamos".
+      titulo.replaceChildren(...linhas.flatMap((l, i) => (i ? [document.createTextNode(' '), l] : [l])));
     }
 
     const sub = document.querySelector('[data-config="heroSubtitulo"]');
@@ -180,7 +193,9 @@
     if (!cards.length) return;
     const celular = matchMedia('(max-width: 767px)');
     // Economia de dados ligada no celular: nada carrega sozinho.
-    const economia = Boolean(navigator.connection && navigator.connection.saveData);
+    // No teste automático, os sites só ligam com &sites=1 (pesam muito na memória).
+    const economia = Boolean(navigator.connection && navigator.connection.saveData)
+      || (TESTE && !/[?&]sites=1\b/.test(location.search));
     const base = () => (celular.matches ? { w: 390, h: 844 } : { w: 1440, h: 900 });
 
     const estado = new Map(cards.map((card) => [card, {
@@ -413,6 +428,20 @@
   /* ---------- 5. Animações (GSAP + ScrollTrigger, carregados da CDN) ---------- */
   const GSAP = 'https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/';
 
+  // Link com âncora (ex.: .../#contato): o navegador pula para a seção antes de o
+  // hero preso na tela ganhar a altura extra, e a página "desce". Depois que as
+  // animações montam, pula de novo para o lugar certo (se a pessoa ainda não rolou).
+  let usuarioRolou = false;
+  ['wheel', 'touchstart', 'keydown'].forEach((evento) => {
+    window.addEventListener(evento, () => { usuarioRolou = true; }, { once: true, passive: true });
+  });
+  function corrigirAncora() {
+    if (!location.hash || usuarioRolou) return;
+    let alvo = null;
+    try { alvo = document.querySelector(location.hash); } catch (erro) { return; }
+    if (alvo) alvo.scrollIntoView({ behavior: 'instant', block: 'start' });
+  }
+
   function carregarScript(src) {
     return new Promise((ok, falha) => {
       const s = document.createElement('script');
@@ -441,7 +470,14 @@
         gsap.registerPlugin(ScrollTrigger);
         if (raiz.classList.contains('intro')) abertura();
         animacoesDeRolagem();
-        if (document.fonts) document.fonts.ready.then(() => ScrollTrigger.refresh());
+        ScrollTrigger.refresh();
+        corrigirAncora();
+        if (document.fonts) {
+          document.fonts.ready.then(() => {
+            ScrollTrigger.refresh();
+            corrigirAncora();
+          });
+        }
       })
       .catch((erro) => {
         raiz.classList.remove('intro');
@@ -519,7 +555,11 @@
         .to(logoMenu, { opacity: 1, duration: 0.02 }, 0.98);
 
       entradaDosProjetos({ rotateX: 16, y: 90 });
-      return () => raiz.classList.remove('cinema');
+      animarSecoes();
+      return () => {
+        raiz.classList.remove('cinema');
+        limparSecoes();
+      };
     });
 
     // Celular: nada preso na tela; a logo aparece conforme a pessoa rola.
@@ -528,7 +568,45 @@
       gsap.fromTo('.assinatura__halo', { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1, ease: 'none', scrollTrigger: gatilho });
       gsap.fromTo('.assinatura__logo', { opacity: 0, y: 30, scale: 0.96 }, { opacity: 1, y: 0, scale: 1, ease: 'none', scrollTrigger: { ...gatilho, start: 'top 80%' } });
       entradaDosProjetos({ rotateX: 0, y: 40 });
+      animarSecoes();
+      return limparSecoes;
     });
+  }
+
+  // Serviços entram em cascata; a linha do processo se desenha com a rolagem
+  // e cada número acende quando a linha chega nele.
+  function animarSecoes() {
+    gsap.from('.servico', {
+      opacity: 0, y: 24, duration: 0.6, stagger: 0.08, ease: 'power2.out',
+      scrollTrigger: { trigger: '.servicos', start: 'top 82%', once: true },
+    });
+    gsap.from('.segmentos__lista li', {
+      opacity: 0, y: 10, duration: 0.4, stagger: 0.03, ease: 'power2.out',
+      scrollTrigger: { trigger: '.segmentos', start: 'top 88%', once: true },
+    });
+
+    const passos = document.querySelector('[data-passos]');
+    if (!passos) return;
+    raiz.classList.add('processo-animado');
+    gsap.fromTo(passos, { '--progresso': 0 }, {
+      '--progresso': 1,
+      ease: 'none',
+      scrollTrigger: { trigger: passos, start: 'top 62%', end: 'bottom 62%', scrub: 0.4 },
+    });
+    gsap.utils.toArray('.passo').forEach((passo) => {
+      ScrollTrigger.create({
+        trigger: passo,
+        start: 'top 62%',
+        onEnter: () => passo.classList.add('aceso'),
+        onLeaveBack: () => passo.classList.remove('aceso'),
+      });
+    });
+  }
+
+  // Ao trocar computador ↔ celular (ou ligar "reduzir movimento"), volta ao estado parado.
+  function limparSecoes() {
+    raiz.classList.remove('processo-animado');
+    $$('.passo.aceso').forEach((p) => p.classList.remove('aceso'));
   }
 
   // Ato 3: as molduras dos projetos entram inclinadas (3D leve em CSS) e se endireitam.
@@ -587,6 +665,17 @@
         }),
         sitesLigados: $$('[data-tela] iframe').length,
         linkWhatsapp: (document.querySelector('.hero [data-whatsapp]') || {}).href || null,
+        frase: document.getElementById('hero-titulo').textContent.replace(/\s+/g, ' ').trim(),
+        // Onde ficou o topo da seção da âncora (o certo é ~104 px: menu + folga)
+        topoAncora: location.hash && document.querySelector(location.hash)
+          ? Math.round(document.querySelector(location.hash).getBoundingClientRect().top) : null,
+        secoes: {
+          servico1: getComputedStyle(document.querySelector('.servico')).opacity,
+          linhaProcesso: getComputedStyle(document.querySelector('[data-passos]')).getPropertyValue('--progresso').trim(),
+          passosAcesos: $$('.passo.aceso').length,
+          perguntas: $$('.pergunta').length,
+          perguntaAberta: $$('.pergunta[open]').length,
+        },
         logos: $$('[data-logo] img').map((i) => i.complete && i.naturalWidth > 0),
         telaCheiaAberta: Boolean(document.querySelector('[data-tela-cheia][open]')),
         animacao: {
@@ -625,8 +714,13 @@
     const esperar = Number(parametros.get('esperar')) || 1500;
     (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => setTimeout(() => {
       const alvo = location.hash && document.querySelector(location.hash);
-      if (alvo) alvo.scrollIntoView();
-      else if (rolar) window.scrollTo(0, rolar);
+      // &naoRolar: não pula para a âncora aqui, para medir o comportamento real do site.
+      if (alvo && !parametros.has('naoRolar')) alvo.scrollIntoView();
+      else if (!alvo && rolar) window.scrollTo(0, rolar);
+      const mais = Number(parametros.get('mais'));
+      if (mais) window.scrollBy(0, mais);
+      const abrir = parametros.get('abrir');
+      if (abrir !== null) $$('.pergunta')[Number(abrir)].open = true;
       // O headless não dispara "scroll" sozinho (sem quadros de desenho).
       window.dispatchEvent(new Event('scroll'));
       if (window.ScrollTrigger) ScrollTrigger.update();

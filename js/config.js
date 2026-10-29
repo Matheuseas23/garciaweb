@@ -15,14 +15,16 @@ window.GARCIA = {
   // navegador funciona melhor com os iframes e no celular.
   USAR_LENIS: false,
 
-  // PENDENTE: frase do início. Cada item é uma linha;
-  // cada linha fica um tom mais apagada que a anterior.
-  heroFrase: ['Seu negócio', 'merece um site', 'à altura.'],
-  // Troque para true quando a frase for a definitiva.
-  heroFraseConfirmada: false,
+  // Frase do início (confirmada em 29/10). Cada item é uma linha, que sobe
+  // sozinha na abertura. tom: 'apagado' = cinza; *entre asteriscos* = laranja.
+  heroFrase: [
+    { texto: 'Não criamos sites.', tom: 'apagado' },
+    { texto: 'Criamos *presença digital*.' },
+  ],
+  heroFraseConfirmada: true,
 
   heroSubtitulo:
-    'Sites personalizados para negócios de São Paulo, do primeiro rascunho à publicação, com contato direto comigo.',
+    'Sites personalizados para negócios de São Paulo, do primeiro rascunho à publicação, com contato direto com quem faz o seu site.',
 
   // Número do WhatsApp com DDI e DDD, só números (confirmado em 29/10).
   // Se virar null, os botões do WhatsApp levam para a seção de contato.
