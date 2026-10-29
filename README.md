@@ -3,7 +3,7 @@
 Página única em HTML, CSS e JavaScript puros. Sem instalação: as bibliotecas de animação (GSAP 3.15.0 + ScrollTrigger) são carregadas da CDN jsDelivr pelo `js/main.js`. Se a CDN falhar ou demorar, a página aparece completa, só que parada.
 
 ## Como abrir
-- **Go Live (Live Server):** clique em "Go Live" na barra de baixo do editor. Abre em `http://127.0.0.1:5500/`. Funciona com a pasta `Garcia web` aberta (o `.vscode/settings.json` de lá aponta a raiz do servidor para `site/`) ou com a pasta `site` aberta direto.
+- **Go Live (Live Server):** abra esta pasta (`site`) no editor e clique em "Go Live" na barra de baixo. Abre em `http://127.0.0.1:5500/`.
 - Dois cliques em `index.html` também abrem, mas a página 404 só funciona pelo Live Server ou publicada.
 
 ## Onde editar
@@ -21,8 +21,11 @@ Não envia nada para servidor nenhum: monta a mensagem (nome, negócio, tipo de 
 - `assets/compartilhar.png` (1200 × 630): imagem da prévia do link no WhatsApp/Instagram.
 - `404.html`, `robots.txt`, `vercel.json` (cache das imagens + cabeçalhos de segurança), `.vercelignore`.
 
+## Arquivos internos
+Esta pasta também guarda arquivos de trabalho que **não** vão para o GitHub nem para o site (estão no `.gitignore` e no `.vercelignore`): `CLAUDE.md`, `garcia-claude/`, `DESIGN.md`, imagens de referência, a logo original e `.vscode/`.
+
 ## Publicar na Vercel
-1. Subir esta pasta (`site/`) para um repositório no GitHub.
+1. Repositório: https://github.com/Matheuseas23/garciaweb (`git push` envia o que está commitado).
 2. Na Vercel: **Add New → Project → Import** o repositório. Framework: **Other**. Sem comando de build.
 3. Depois de publicado, no `index.html`, trocar `content="assets/compartilhar.png"` (tag `og:image`) pelo endereço completo, ex.: `https://SEU-ENDERECO/assets/compartilhar.png`. Sem isso, a prévia do link no WhatsApp pode sair sem imagem.
 4. Testar: abrir no celular, mandar o link para si mesmo no WhatsApp (ver a prévia), testar o formulário e o PageSpeed (https://pagespeed.web.dev/).
