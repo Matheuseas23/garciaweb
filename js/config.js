@@ -45,6 +45,7 @@ window.GARCIA = {
     acai: { status: 'cliente' },      // confirmado em 29/10
     benedita: { status: 'cliente' },  // confirmado em 29/10
     paris6: { status: 'cliente' },    // confirmado em 29/10
+    flavors: { status: 'demonstracao' }, // venda não fechou (05/11)
     inovatech: { status: 'academico' }, // projeto acadêmico (TCC)
   },
 };

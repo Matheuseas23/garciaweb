@@ -533,6 +533,15 @@ h1, h2, h3 {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: clamp(2rem, 4vw, 3.5rem) clamp(1.25rem, 3vw, 2.5rem);
 }
+/* Número ímpar de projetos: o último fica sozinho na linha, centralizado
+   e com a mesma largura dos outros (metade da grade menos o espaço entre colunas). */
+@media (min-width: 768px) {
+  .projeto:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+    justify-self: center;
+    width: calc((100% - clamp(1.25rem, 3vw, 2.5rem)) / 2);
+  }
+}
 
 .janela {
   overflow: hidden;
