@@ -260,10 +260,12 @@
   }
 
   /* ---------- 4. Portfólio ao vivo (iframes) ---------- */
-  // Cada card carrega o site de verdade quando chega perto da tela e o desliga
+  // Cada card carrega o site de verdade quando chega perto da tela.
+  // No computador, o site fica ligado até a pessoa sair da página (não recarrega ao
+  // rolar). No celular, a memória é curta: no máximo 2 ligados, e o card desliga
   // pouco depois de sair (com folga, para não recarregar a cada rolagem pequena).
-  const MAX_VIVOS = 2;              // sites ligados ao mesmo tempo, no máximo
-  const ESPERA_DESLIGAR = 1500;     // ms fora da área antes de desligar
+  const MAX_VIVOS_CELULAR = 2;      // sites ligados ao mesmo tempo no celular, no máximo
+  const ESPERA_DESLIGAR = 1500;     // ms fora da área antes de desligar (celular)
   const MOSTRAR_EM = 4000;          // ms: mostra o site mesmo sem o aviso de "carregou"
   const LIMITE_LENTO = 12000;       // ms até avisar que o site está demorando
   const SANDBOX = 'allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox';
@@ -380,10 +382,12 @@
     // Escolhe quais cards ficam ligados: o que está em "Interagir" primeiro,
     // depois os mais perto do centro da tela.
     function revisar() {
+      const manterLigados = !celular.matches;
+      const limite = manterLigados ? cards.length : MAX_VIVOS_CELULAR;
       const escolhidos = cards
         .filter((c) => estado.get(c).liberado && (perto(c) || interagindo(c)))
         .sort((a, b) => (interagindo(b) - interagindo(a)) || distancia(a) - distancia(b))
-        .slice(0, MAX_VIVOS);
+        .slice(0, limite);
 
       cards.forEach((c) => {
         const e = estado.get(c);
@@ -391,7 +395,7 @@
           const r = c.getBoundingClientRect();
           if (r.bottom < 0 || r.top > window.innerHeight) sairDoSite(c); // saiu da tela
         }
-        if (escolhidos.includes(c) || !e.iframe || e.timerDesligar) return;
+        if (manterLigados || escolhidos.includes(c) || !e.iframe || e.timerDesligar) return;
         e.timerDesligar = setTimeout(() => desligar(c), ESPERA_DESLIGAR);
       });
 
@@ -400,9 +404,9 @@
         clearTimeout(e.timerDesligar);
         e.timerDesligar = 0;
         if (e.iframe) return;
-        // Vaga ocupada por um card que já vai sair? Desliga agora, para nunca passar de MAX_VIVOS.
+        // Vaga ocupada por um card que já vai sair? Desliga agora, para nunca passar do limite.
         const sobrando = vivos().filter((v) => !escolhidos.includes(v));
-        while (vivos().length >= MAX_VIVOS && sobrando.length) desligar(sobrando.pop());
+        while (vivos().length >= limite && sobrando.length) desligar(sobrando.pop());
         ligar(c);
       });
     }
@@ -488,7 +492,7 @@
     });
 
     // Só começa depois que a página terminou de carregar (não disputa com o hero).
-    // Com 4 cards, medir a posição deles a cada rolagem custa quase nada.
+    // Com poucos cards, medir a posição deles a cada rolagem custa quase nada.
     const comecar = () => setTimeout(() => {
       cards.forEach((card) => {
         emEspera(card);
