@@ -597,16 +597,7 @@
       raiz.classList.add('cinema');
       const logoGrande = document.querySelector('.assinatura__logo');
       const logoMenu = document.querySelector('.menu__logo [data-logo]');
-
-      // Distância e escala do centro da tela (onde a logo grande fica) até a logo do menu.
-      const voo = () => {
-        const alvo = logoMenu.getBoundingClientRect();
-        return {
-          x: alvo.left + alvo.width / 2 - window.innerWidth / 2,
-          y: alvo.top + alvo.height / 2 - window.innerHeight / 2,
-          escala: alvo.height / logoGrande.offsetHeight,
-        };
-      };
+      const voo = voarAteOMenu(logoGrande, logoMenu);
 
       gsap.set(logoMenu, { opacity: 0 });
       gsap.timeline({
@@ -619,6 +610,12 @@
           pin: true,
           anticipatePin: 1,
           invalidateOnRefresh: true,
+          // O voo não segue a rolagem quadro a quadro: passou de 80%, ele dispara
+          // com ritmo próprio; voltando abaixo de 74%, a logo volta voando.
+          onUpdate: (st) => {
+            if (st.progress >= 0.8) voo.ir(st.isActive);
+            else if (st.progress < 0.74) voo.voltar(st.isActive);
+          },
         },
       })
         .to('.hero__conteudo', { yPercent: -18, opacity: 0, duration: 0.35, ease: 'power1.in' }, 0)
@@ -628,19 +625,12 @@
         .fromTo('.assinatura__halo', { opacity: 0, scale: 0.55 }, { opacity: 1, scale: 1, duration: 0.4, ease: 'power2.out' }, 0.2)
         .fromTo(logoGrande, { opacity: 0, scale: 0.96, filter: 'blur(14px)' }, { opacity: 1, scale: 1, filter: 'blur(0px)', duration: 0.35, ease: 'power2.out' }, 0.3)
         .to('.assinatura__halo', { opacity: 0, scale: 0.7, duration: 0.22 }, 0.78)
-        .to(logoGrande, {
-          x: () => voo().x,
-          y: () => voo().y,
-          scale: () => voo().escala,
-          duration: 0.2,
-          ease: 'power2.inOut',
-        }, 0.78)
-        .to(logoGrande, { opacity: 0, duration: 0.02 }, 0.98)
-        .to(logoMenu, { opacity: 1, duration: 0.02 }, 0.98);
+        .to({}, { duration: 0.22 }, 0.78); // trecho final: o voo acontece aqui
 
       entradaDosProjetos({ rotateX: 16, y: 90 });
       animarSecoes();
       return () => {
+        voo.desfazer();
         raiz.classList.remove('cinema');
         limparSecoes();
       };
@@ -655,6 +645,117 @@
       animarSecoes();
       return limparSecoes;
     });
+  }
+
+  // Voo da logo grande até o menu (computador). Uma cópia da imagem, presa à tela e
+  // acima do menu, faz o trajeto: prepara (respira), sobe em curva com um rastro de
+  // luz e pousa no menu com um encaixe elástico e uma onda de luz. Só movimento,
+  // tamanho e transparência: o desenho da logo nunca muda.
+  function voarAteOMenu(logoGrande, logoMenu) {
+    let tl = null;
+    let pecas = [];
+    let foi = false;
+    let montadoNoHero = false; // as medidas só valem se o hero estava na tela
+
+    function limpar() {
+      pecas.forEach((el) => el.remove());
+      pecas = [];
+      if (tl) tl.kill();
+      tl = null;
+    }
+
+    function criar(classe, origem) {
+      const el = origem ? origem.cloneNode(false) : document.createElement('div');
+      el.className = classe;
+      if (origem) el.alt = '';
+      el.setAttribute('aria-hidden', 'true');
+      document.body.appendChild(el);
+      pecas.push(el);
+      return el;
+    }
+
+    function montar() {
+      limpar();
+      const imgGrande = logoGrande.querySelector('img');
+      const imgMenu = logoMenu.querySelector('img');
+      if (!imgGrande || !imgMenu) return null;
+      const de = imgGrande.getBoundingClientRect();
+      const ate = imgMenu.getBoundingClientRect();
+      // Destino: o centro da cópia em cima do centro da logo do menu, no mesmo tamanho.
+      const xFim = ate.left + ate.width / 2 - de.width / 2;
+      const yFim = ate.top + ate.height / 2 - de.height / 2;
+      const escala = ate.width / de.width;
+
+      const fantasma = criar('voo-fantasma', imgGrande);
+      gsap.set(fantasma, { width: de.width, height: de.height, x: de.left, y: de.top, transformOrigin: '50% 50%' });
+
+      const lado = de.width * 0.9;
+      const rastro = criar('voo-rastro');
+      const centroRastro = (r) => ({ x: r.left + r.width / 2 - lado / 2, y: r.top + r.height / 2 - lado / 2 });
+      gsap.set(rastro, { width: lado, height: lado, ...centroRastro(de), opacity: 0 });
+
+      const raio = ate.height * 1.1;
+      const onda = criar('voo-onda');
+      gsap.set(onda, { width: raio * 2, height: raio * 2, x: ate.left + ate.width / 2 - raio, y: ate.top + ate.height / 2 - raio, opacity: 0 });
+
+      return gsap.timeline({ paused: true, onReverseComplete: limpar })
+        .set(logoGrande, { visibility: 'hidden' }, 0)
+        // 1. Preparação: a logo "respira" e afunda um pouco antes de sair.
+        .to(fantasma, { scale: 1.07, y: de.top + 12, duration: 0.2, ease: 'power2.out' }, 0)
+        .to(rastro, { opacity: 0.9, duration: 0.2 }, 0)
+        // 2. Voo em curva: sobe rápido e desliza até o menu, inclinando de leve.
+        .to(fantasma, { x: xFim, duration: 0.8, ease: 'power3.inOut' }, 0.2)
+        .to(fantasma, { y: yFim, duration: 0.8, ease: 'power2.out' }, 0.2)
+        // Encolhe enquanto sobe: chega perto do menu já pequena, sem cobrir os links.
+        .to(fantasma, { scale: escala, duration: 0.8, ease: 'power3.out' }, 0.2)
+        .to(fantasma, { rotation: -7, duration: 0.35, ease: 'power1.out' }, 0.2)
+        .to(fantasma, { rotation: 0, duration: 0.45, ease: 'power2.inOut' }, 0.55)
+        // O rastro de luz segue a logo com um pequeno atraso e se apaga ao chegar.
+        .to(rastro, { x: centroRastro(ate).x, duration: 0.8, ease: 'power3.inOut' }, 0.27)
+        .to(rastro, { y: centroRastro(ate).y, duration: 0.8, ease: 'power2.out' }, 0.27)
+        .to(rastro, { scale: (ate.height * 2.6) / lado, duration: 0.8, ease: 'power3.out' }, 0.27)
+        .to(rastro, { opacity: 0, duration: 0.3 }, 0.85)
+        // 3. Pouso: a cópia some e a logo do menu encaixa com elasticidade + onda de luz.
+        .to(fantasma, { opacity: 0, duration: 0.06 }, 0.98)
+        .fromTo(logoMenu, { opacity: 0, scale: 1.3 }, { opacity: 1, scale: 1, duration: 0.7, ease: 'elastic.out(1, 0.45)', immediateRender: false }, 0.98)
+        .fromTo(onda, { opacity: 0.95, scale: 0.4 }, { opacity: 0, scale: 1.7, duration: 0.6, ease: 'power2.out', immediateRender: false }, 0.98);
+    }
+
+    // ativo = o hero está preso na tela. Fora dele (a pessoa rolou rápido ou pulou para
+    // outra seção), a logo vai direto para o estado final, sem voar por cima de outra seção.
+    return {
+      ir(ativo) {
+        if (foi) {
+          if (!ativo && tl && tl.isActive()) tl.progress(1); // saiu do hero no meio do voo
+          return;
+        }
+        foi = true;
+        if (!tl) {
+          tl = montar();
+          montadoNoHero = ativo;
+        }
+        if (!tl) { gsap.set(logoMenu, { opacity: 1 }); return; }
+        if (ativo) tl.timeScale(1).play();
+        else tl.progress(1);
+      },
+      voltar(ativo) {
+        if (!foi) {
+          if (!ativo && tl && tl.isActive()) { tl.progress(0); limpar(); } // subiu além do hero na volta
+          return;
+        }
+        foi = false;
+        if (!tl) return;
+        if (ativo && montadoNoHero) tl.timeScale(1.6).reverse(); // volta mais rápido do que foi
+        else { tl.progress(0); limpar(); }
+      },
+      desfazer() {
+        if (tl) tl.progress(0);
+        limpar();
+        foi = false;
+        gsap.set(logoGrande, { clearProps: 'visibility' });
+        gsap.set(logoMenu, { clearProps: 'opacity,transform' });
+      },
+    };
   }
 
   // Serviços entram em cascata; a linha do processo se desenha com a rolagem
@@ -781,6 +882,7 @@
           linha1: getComputedStyle(document.querySelector('.hero__linha > span')).transform,
           logoGrande: getComputedStyle(document.querySelector('.assinatura__logo')).opacity,
           logoMenu: getComputedStyle(document.querySelector('.menu__logo [data-logo]')).opacity,
+          vooPecas: $$('.voo-fantasma, .voo-rastro, .voo-onda').length,
         },
         fontes: document.fonts ? [...document.fonts].filter((f) => f.status === 'loaded').map((f) => f.family + ' ' + f.weight) : [],
       };

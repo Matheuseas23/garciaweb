@@ -501,6 +501,35 @@ h1, h2, h3 {
   pointer-events: none;
 }
 
+/* Voo da logo até o menu (main.js, função voarAteOMenu): uma cópia da imagem
+   presa à tela, acima do menu, para não ser cortada nem passar por baixo do vidro. */
+.voo-fantasma,
+.voo-rastro,
+.voo-onda {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 70;
+  margin: 0;
+  pointer-events: none;
+  transform-origin: 0 0;
+  will-change: transform, opacity;
+}
+.voo-rastro { /* luz que segue a logo */
+  z-index: 69;
+  border-radius: 50%;
+  background:
+    radial-gradient(closest-side at 38% 50%, rgba(249, 109, 20, 0.55), transparent),
+    radial-gradient(closest-side at 62% 50%, rgba(12, 8, 251, 0.6), transparent);
+  filter: blur(18px);
+  transform-origin: 50% 50%;
+}
+.voo-onda { /* anel de luz quando a logo pousa no menu */
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px rgba(249, 109, 20, 0.85), 0 0 24px 4px rgba(12, 8, 251, 0.55);
+  transform-origin: 50% 50%;
+}
+
 /* Estado inicial da abertura (só enquanto a classe "intro" existir). */
 .intro .hero__fundo,
 .intro .hero .etiqueta,
