@@ -1014,6 +1014,43 @@ h1, h2, h3 {
 }
 .pergunta[open]::details-content { block-size: auto; }
 
+/* Preço de entrada, em destaque no texto dos serviços */
+.preco { color: var(--texto); font-weight: 600; white-space: nowrap; }
+
+/* ---------- Quem faz: foto do Matheus + texto ---------- */
+.sobre {
+  display: grid;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 7fr);
+  gap: clamp(2.5rem, 6vw, 6rem);
+  align-items: center;
+}
+.sobre__foto {
+  position: relative;
+  isolation: isolate; /* a luz (z-index -1) fica atrás da foto, não atrás da seção */
+  width: 100%;
+  max-width: 420px;
+  justify-self: center;
+}
+.sobre__foto::before { /* luz da marca atrás da foto */
+  content: "";
+  position: absolute;
+  inset: -12%;
+  z-index: -1;
+  background:
+    radial-gradient(45% 45% at 25% 75%, rgba(249, 109, 20, 0.35), transparent 70%),
+    radial-gradient(45% 45% at 80% 25%, rgba(12, 8, 251, 0.4), transparent 70%);
+  filter: blur(30px);
+}
+.sobre__foto img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--raio-card);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12), 0 30px 60px -20px rgba(0, 0, 0, 0.7);
+}
+.sobre__texto { display: grid; justify-items: start; gap: 1.1rem; }
+.sobre__texto .botao { margin-top: 0.75rem; }
+
 /* ---------- 12. Contato ---------- */
 .contato { overflow: hidden; isolation: isolate; text-align: center; }
 .contato__luz {
@@ -1211,6 +1248,8 @@ h1, h2, h3 {
 }
 
 @media (max-width: 860px) {
+  .sobre { grid-template-columns: 1fr; gap: 2.5rem; }
+  .sobre__foto { max-width: 300px; justify-self: start; }
   .contato__grade { grid-template-columns: 1fr; }
   .rodape__grade { grid-template-columns: 1fr 1fr; }
   .rodape__marca-texto { grid-column: 1 / -1; }
