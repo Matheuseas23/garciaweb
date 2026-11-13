@@ -840,6 +840,7 @@ h1, h2, h3 {
 }
 .projeto__info .etiqueta { margin-bottom: 0.35rem; }
 .projeto__nome { font-size: var(--fs-h3); letter-spacing: -0.02em; line-height: 1.2; }
+.projeto__desc { max-width: 34rem; margin-top: 0.35rem; font-size: 0.9375rem; color: var(--texto-2); }
 .projeto__acoes { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
 .botao[aria-pressed="true"] { background: rgba(249, 109, 20, 0.16); box-shadow: inset 0 0 0 1px rgba(249, 109, 20, 0.6); }
 
