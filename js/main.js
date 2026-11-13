@@ -542,9 +542,10 @@
     const bibliotecas = carregarScript(GSAP + 'gsap.min.js')
       .then(() => carregarScript(GSAP + 'ScrollTrigger.min.js'));
 
-    // Se a CDN demorar mais de 1,5 s, a página aparece parada (sem abertura);
-    // as animações de rolagem entram quando as bibliotecas chegarem.
-    const tarde = new Promise((ok) => setTimeout(() => ok('tarde'), 1500));
+    // Se a CDN demorar demais (1,5 s; com a tela de entrada, até ela acabar), a página
+    // aparece parada (sem abertura); as animações de rolagem entram quando as bibliotecas chegarem.
+    const inicio = window.__inicioAbertura || 0;
+    const tarde = new Promise((ok) => setTimeout(() => ok('tarde'), Math.max(1500, inicio + 800)));
     Promise.race([bibliotecas.then(() => 'ok'), tarde]).then((r) => {
       if (r === 'tarde') raiz.classList.remove('intro');
     });
@@ -552,8 +553,14 @@
     bibliotecas
       .then(() => {
         gsap.registerPlugin(ScrollTrigger);
-        if (raiz.classList.contains('intro')) abertura();
+        if (raiz.classList.contains('intro')) {
+          // Com a tela de entrada, a frase só sobe quando ela começa a sair.
+          const falta = inicio - performance.now();
+          if (falta > 0) setTimeout(abertura, falta);
+          else abertura();
+        }
         animacoesDeRolagem();
+        pausarManchasForaDaTela();
         ScrollTrigger.refresh();
         corrigirAncora();
         if (document.fonts) {
@@ -567,6 +574,21 @@
         raiz.classList.remove('intro');
         window.__erroAnimacao = String(erro && (erro.stack || erro.message || erro.type || erro));
       });
+  }
+
+  // As manchas do fundo do hero (animação só de CSS) param quando o hero sai da tela.
+  // Conta direta na rolagem (o IntersectionObserver errava com o hero preso pelo ScrollTrigger).
+  function pausarManchasForaDaTela() {
+    const abertura = document.querySelector('.abertura');
+    if (!abertura) return;
+    let fora = false;
+    const conferir = () => {
+      const r = (abertura.closest('.pin-spacer') || abertura).getBoundingClientRect();
+      const agora = r.bottom < 0 || r.top > window.innerHeight;
+      if (agora !== fora) raiz.classList.toggle('hero-fora', (fora = agora));
+    };
+    window.addEventListener('scroll', conferir, { passive: true });
+    conferir();
   }
 
   // Ato 1: a luz acende, o menu desce e a frase sobe linha a linha.

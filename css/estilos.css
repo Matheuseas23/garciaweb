@@ -360,12 +360,31 @@ h1, h2, h3 {
 .hero__luz {
   position: absolute;
   inset: -50%;
+}
+/* As duas manchas se mexem sozinhas, de canto a canto e de volta, com tempos
+   diferentes (3,6 s e 4,6 s): a mesma animação do fundo do Minhas Músicas,
+   com o tamanho das manchas da Garcia. Pausam quando o hero sai da tela. */
+.hero__mancha {
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+}
+.hero__mancha--laranja {
   background:
     radial-gradient(21% 24% at 35% 71%, rgba(249, 109, 20, 0.62), transparent 72%),
-    radial-gradient(15% 18% at 42% 77%, rgba(255, 170, 110, 0.35), transparent 70%),
+    radial-gradient(15% 18% at 42% 77%, rgba(255, 170, 110, 0.35), transparent 70%);
+  animation: mancha-laranja 3.6s ease-in-out infinite alternate;
+}
+.hero__mancha--azul {
+  background:
     radial-gradient(17% 29% at 67% 51%, rgba(12, 8, 251, 0.58), transparent 72%),
     radial-gradient(9% 15% at 63% 50%, rgba(170, 185, 255, 0.16), transparent 70%);
+  animation: mancha-azul 4.6s ease-in-out infinite alternate;
 }
+/* Laranja: de baixo à esquerda para cima à direita. Azul: da direita para baixo à esquerda. */
+@keyframes mancha-laranja { to { transform: translate(31%, -35%) scale(1.1); } }
+@keyframes mancha-azul { to { transform: translate(-33%, 15%) scale(0.9); } }
+.hero-fora .hero__mancha { animation-play-state: paused; }
 
 /* Vidro canelado: faixas verticais com borda clara e sombra, sobre a luz */
 .hero__canelado {
@@ -528,6 +547,118 @@ h1, h2, h3 {
   border-radius: 50%;
   box-shadow: 0 0 0 2px rgba(249, 109, 20, 0.85), 0 0 24px 4px rgba(12, 8, 251, 0.55);
   transform-origin: 50% 50%;
+}
+
+/* ---------- Tela de entrada (só na 1ª visita da aba: classe "com-entrada", posta no <head>) ----------
+   Inspirada na abertura do Minhas Músicas: tela escura com as manchas se mexendo, anel de
+   vidro com a borda no gradiente da marca girando, a logo surge com mola e um reflexo de luz
+   passa por ela; depois tudo some e o site entra do desfoque para o foco.
+   A logo só aparece, cresce e some: nunca é distorcida nem recolorida. */
+.entrada { display: none; }
+.com-entrada .entrada {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: block;
+  overflow: hidden;
+  background: var(--bg);
+  -webkit-backdrop-filter: blur(24px);
+  backdrop-filter: blur(24px);
+  animation: entrada-some 0.8s ease 2.4s forwards;
+}
+.entrada-fim .entrada { display: none; }
+.entrada__manchas,
+.entrada__anel,
+.entrada__logo {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  translate: -50% -50%;
+}
+.entrada__manchas { width: min(110vmin, 760px); aspect-ratio: 1; }
+.entrada__manchas::before,
+.entrada__manchas::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  will-change: transform;
+}
+.entrada__manchas::before {
+  background: radial-gradient(30% 30% at 40% 58%, rgba(249, 109, 20, 0.55), transparent);
+  animation: entrada-mancha-1 1.8s ease-in-out infinite alternate;
+}
+.entrada__manchas::after {
+  background: radial-gradient(30% 30% at 60% 42%, rgba(12, 8, 251, 0.6), transparent);
+  animation: entrada-mancha-2 2.3s ease-in-out infinite alternate;
+}
+.entrada__anel {
+  width: min(62vmin, 300px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, transparent 58%, rgba(255, 255, 255, 0.07) 68%, transparent 71%);
+  box-shadow: inset 0 0 36px rgba(255, 255, 255, 0.12), inset 0 0 3px rgba(255, 255, 255, 0.5), 0 0 70px rgba(249, 109, 20, 0.2);
+  opacity: 0;
+  scale: 0.12;
+  animation: entrada-anel 2s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s forwards;
+}
+.entrada__anel::before { /* borda no gradiente laranja → azul, girando */
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(var(--laranja), var(--azul), var(--laranja));
+  -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 2px));
+  mask: radial-gradient(farthest-side, transparent calc(100% - 4px), #000 calc(100% - 2px));
+  filter: blur(1px);
+  animation: entrada-girar 2.3s linear 0.3s;
+}
+.entrada__logo {
+  width: min(48vmin, 230px);
+  opacity: 0;
+  scale: 0.6;
+  animation:
+    entrada-logo-surge 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) 0.6s forwards,
+    entrada-logo-sai 0.6s ease-in 2.2s forwards;
+}
+.entrada__logo img { display: block; width: 100%; height: auto; }
+.entrada__logo::after { /* reflexo de luz: recortado no formato da logo, por cima dela */
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.5) 50%, transparent 60%) no-repeat;
+  background-size: 250% 100%;
+  background-position: 130% 0;
+  -webkit-mask: url("../assets/logo-garcia-web-transparente-HD.png") center / 100% 100% no-repeat;
+  mask: url("../assets/logo-garcia-web-transparente-HD.png") center / 100% 100% no-repeat;
+  animation: entrada-reflexo 0.8s ease-in-out 1.45s forwards;
+}
+@keyframes entrada-mancha-1 { to { transform: translate(12%, -10%) scale(1.1); } }
+@keyframes entrada-mancha-2 { to { transform: translate(-12%, 10%) scale(0.9); } }
+@keyframes entrada-anel {
+  0%   { opacity: 0; scale: 0.12; }
+  20%  { opacity: 1; }
+  55%  { opacity: 1; scale: 1; }
+  100% { opacity: 0; scale: 1.45; }
+}
+@keyframes entrada-girar { to { rotate: 360deg; } }
+@keyframes entrada-logo-surge {
+  0%   { opacity: 0; scale: 0.6; }
+  35%  { opacity: 1; }
+  70%  { scale: 1.06; }
+  100% { opacity: 1; scale: 1; }
+}
+@keyframes entrada-logo-sai { /* fade out com desfoque */
+  from { opacity: 1; scale: 1; filter: blur(0); }
+  to   { opacity: 0; scale: 1.18; filter: blur(16px); }
+}
+@keyframes entrada-reflexo { to { background-position: -30% 0; } }
+@keyframes entrada-some { /* o site entra do desfoque para o foco */
+  to {
+    background-color: transparent;
+    -webkit-backdrop-filter: blur(0);
+    backdrop-filter: blur(0);
+    visibility: hidden;
+  }
 }
 
 /* Estado inicial da abertura (só enquanto a classe "intro" existir). */
@@ -1234,6 +1365,7 @@ h1, h2, h3 {
 /* ---------- 16. Movimento reduzido e navegadores sem desfoque ---------- */
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
+  .hero__mancha { animation: none !important; } /* paradas no lugar de sempre */
   .janela__tela::before { animation: none !important; }
   *, *::before, *::after {
     transition-duration: 0.01ms !important;

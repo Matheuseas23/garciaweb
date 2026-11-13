@@ -41,14 +41,26 @@
     }
   </script>
   <script>
-    // Prepara a abertura animada (frase subindo linha a linha). Se ela não
-    // começar em 2,5 s (internet lenta, CDN fora do ar), mostra tudo parado.
+    // Tela de entrada (logo no anel de vidro): só na primeira vez que a pessoa
+    // abre o site nesta aba. Recarregar ou voltar para a home não repete.
+    // Depois dela (ou sem ela), a abertura do hero: a frase sobe linha a linha.
+    // Se a abertura não começar a tempo (internet lenta, CDN fora do ar), mostra tudo parado.
     (function (h) {
       h.classList.replace('sem-js', 'com-js');
-      if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        h.classList.add('intro');
-        setTimeout(function () { if (!window.__introIniciada) h.classList.remove('intro'); }, 2500);
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      var entrada = false;
+      try {
+        entrada = !sessionStorage.getItem('gw-entrada') && !/[?&]teste\b/.test(location.search);
+        sessionStorage.setItem('gw-entrada', '1');
+      } catch (e) {}
+      // Momento em que a abertura do hero começa (ms): junto com a saída da tela de entrada.
+      window.__inicioAbertura = entrada ? 2300 : 0;
+      if (entrada) {
+        h.classList.add('com-entrada');
+        setTimeout(function () { h.classList.add('entrada-fim'); }, 3300); // garantia: some mesmo se algo travar
       }
+      h.classList.add('intro');
+      setTimeout(function () { if (!window.__introIniciada) h.classList.remove('intro'); }, 2500 + window.__inicioAbertura);
     })(document.documentElement);
   </script>
 
@@ -64,6 +76,13 @@
   <script src="js/main.js" defer></script>
 </head>
 <body>
+  <!-- ===== TELA DE ENTRADA (só CSS; aparece só na 1ª visita da aba, ver o script do <head>) ===== -->
+  <div class="entrada" aria-hidden="true" hidden>
+    <div class="entrada__manchas"></div>
+    <div class="entrada__anel"></div>
+    <div class="entrada__logo"><img src="assets/logo-garcia-web-transparente-HD.png" width="2454" height="1328" alt="" decoding="async"></div>
+  </div>
+
   <a class="pular" href="#conteudo">Pular para o conteúdo</a>
 
   <!-- ===== MENU (computador: cápsula de vidro no topo) ===== -->
@@ -94,7 +113,10 @@
     <section id="inicio" class="abertura" aria-labelledby="hero-titulo">
       <div class="hero"><!-- Ato 1: frase, subtítulo e botões -->
       <div class="hero__fundo" aria-hidden="true">
-        <div class="hero__luz"></div>
+        <div class="hero__luz">
+          <div class="hero__mancha hero__mancha--laranja"></div>
+          <div class="hero__mancha hero__mancha--azul"></div>
+        </div>
         <div class="hero__canelado"></div>
         <div class="hero__grao"></div>
       </div>
